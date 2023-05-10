@@ -1,0 +1,42 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Пример страницы WELCOME</title>
+    <style>
+        .green-bg {
+            background-color: green;
+            color: white;
+            padding: 10px;
+            text-align: center;
+        }
+    </style>
+</head>
+<body>
+<header>
+    <p>Краткое описание проекта</p>
+</header>
+<main>
+    <div class="to_auth">
+        <span>Login as ...</span>
+    </div>
+    <div class="to_auth">
+        To channels: <a href="/channels">click here</a>
+    </div>
+    <div class="unauthenticated">
+        With GitHub: <a href="/oauth2/authorization/github">click here</a>
+    </div>
+    <div>
+        With Google: <a href="/oauth2/authorization/google">click here</a>
+    </div>
+    <div class="authenticated">
+        Logged in as: <span id="user"></span>
+        <div>
+            <form method="POST" th:action="@{/logout}">
+                <input type="submit" value="Logout"/>
+            </form>
+        </div>
+    </div>
+</main>
+</body>
+</html>
