@@ -1,6 +1,6 @@
 package farm.giggle.yt2rss.serv;
 
-import farm.giggle.yt2rss.model.Auth2Provider;
+import farm.giggle.yt2rss.model.Auth2ProviderEnum;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.repo.UserRepo;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
@@ -25,11 +25,11 @@ public class ExtendedOAuth2UserService implements OAuth2UserService<OAuth2UserRe
 
     private ExtendedOAuth2User dbProcess(OAuth2User oAuth2User, OAuth2UserRequest userRequest) {
         String userId = oAuth2User.getName();
-        User user = userRepo.findUserByAuth2ProviderAndAndAuth2Id(Auth2Provider.GITHUB, userId);
+        User user = userRepo.findUserByAuth2ProviderAndAndAuth2Id(Auth2ProviderEnum.GITHUB, userId);
         if (user == null) {
             user = new User();
             user.setName(userId);
-            user.setAuth2Provider(Auth2Provider.GITHUB);
+            user.setAuth2Provider(Auth2ProviderEnum.GITHUB);
             user.setAuth2Id(userId);
             userRepo.save(user);
         }

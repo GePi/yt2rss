@@ -11,12 +11,22 @@
     <tr>
         <th>URL</th>
         <th>Название</th>
+        <th>Список файлов</th>
+        <th>Действия</th>
     </tr>
     </thead>
     <tbody>
     <tr th:each="channel : ${channels}">
-        <td th:text="${channel.url}"></td>
+        <td><a th:href="${channel.url}" th:text="${channel.url}">Ссылка на канал</a></td>
         <td th:text="${channel.title}"></td>
+        <td><a th:href="@{/channels/files(channelId=${channel.id})}">Файлы >></a></td>
+        <td>
+            <form th:action="@{/channels/del-channel}" method="post">
+                <input hidden th:value="${channel.id}" name="channelId">
+
+                <button type="submit" value="Удалить"><img src="trash.png" width="15px"></button>
+            </form>
+        </td>
     </tr>
     </tbody>
 </table>

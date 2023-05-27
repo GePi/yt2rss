@@ -4,6 +4,8 @@ import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
 
+import java.util.List;
+
 @Getter
 @Setter
 @Entity
@@ -20,6 +22,16 @@ public class Channel {
     @ManyToOne
     @JoinColumn(name = "user_id")
     private User user;
+    @OneToMany(mappedBy = "channel", cascade = CascadeType.ALL, fetch = FetchType.LAZY)
+    private List<File> fileList;
 
+    public void addFile(File file) {
+        fileList.add(file);
+        file.setChannel(this);
+    }
 
+    public void removeFile(File file) {
+        fileList.remove(file);
+        file.setChannel(null);
+    }
 }

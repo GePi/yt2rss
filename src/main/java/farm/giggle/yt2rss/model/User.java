@@ -17,7 +17,7 @@ public class User {
     private String name;
     @Enumerated(EnumType.STRING)
     @Column(nullable = false)
-    private Auth2Provider auth2Provider;
+    private Auth2ProviderEnum auth2Provider;
     @Column(nullable = false)
     private String auth2Id;
 }

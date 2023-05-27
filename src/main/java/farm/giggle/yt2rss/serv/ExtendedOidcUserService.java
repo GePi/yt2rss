@@ -1,6 +1,6 @@
 package farm.giggle.yt2rss.serv;
 
-import farm.giggle.yt2rss.model.Auth2Provider;
+import farm.giggle.yt2rss.model.Auth2ProviderEnum;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.repo.UserRepo;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
@@ -23,11 +23,11 @@ public class ExtendedOidcUserService extends OidcUserService {
 
     private OidcUser dbProcess(OidcUser oidcUser, OidcUserRequest userRequest) {
         String userId = oidcUser.getName();
-        User user = userRepo.findUserByAuth2ProviderAndAndAuth2Id(Auth2Provider.GOOGLE, userId);
+        User user = userRepo.findUserByAuth2ProviderAndAndAuth2Id(Auth2ProviderEnum.GOOGLE, userId);
         if (user == null) {
             user = new User();
             user.setName(userId);
-            user.setAuth2Provider(Auth2Provider.GOOGLE);
+            user.setAuth2Provider(Auth2ProviderEnum.GOOGLE);
             user.setAuth2Id(userId);
             userRepo.save(user);
         }

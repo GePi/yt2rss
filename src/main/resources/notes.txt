@@ -1,0 +1,10 @@
+https://www.youtube.com/user/plushev
+
+https://www.youtube.com/feeds/videos.xml?channel_id=UCTVk323gzizpujtn2T_BL7w
+
+Your program should avoid parsing the normal stdout since they may change in future versions.
+Instead they should use options such as -J, --print, --progress-template, --exec etc to create
+console output that you can reliably reproduce and parse.
+
+
+

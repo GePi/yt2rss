@@ -1,5 +1,5 @@
 package farm.giggle.yt2rss.model;
 
-public enum Auth2Provider {
+public enum Auth2ProviderEnum {
     GOOGLE, GITHUB
 }

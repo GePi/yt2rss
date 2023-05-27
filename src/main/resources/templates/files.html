@@ -1,0 +1,30 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список файлов</title>
+</head>
+<body>
+<h1>Список файлов для канала <span th:text="${channel.title}"></span></h1>
+<table>
+    <thead>
+    <tr>
+        <th>URL оригинала</th>
+        <th>Время обновления файла</th>
+        <th>Скаченный файл</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="file : ${files}">
+        <td><a th:href="${file.getOriginalUrl}" th:text="${file.title}">Ссылка на файл</a></td>
+        <td th:text="${file.publishedTime}"></td>
+        <th><a th:href="${file.downloadedFileUrl1}" th:text="${file.downloadedFileUrl1}">Ссылка на скаченный файл</a>
+        </th>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <a th:href="@{/channels}">К списку каналов</a>
+</div>
+</body>
+</html>

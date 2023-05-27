@@ -10,11 +10,13 @@ import org.springframework.security.config.annotation.web.configuration.EnableWe
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.web.SecurityFilterChain;
+import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
 import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
 
 @Configuration
 @EnableWebSecurity
+//@EnableAspectJAutoProxy
 public class SecurityConfig {
 
     private final UserRepo userRepo;
@@ -26,7 +28,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().ignoringRequestMatchers(toH2Console())
+                .csrf().ignoringRequestMatchers(toH2Console(), new AntPathRequestMatcher("/api/**"))
                 .and()
                 .headers().frameOptions().disable()
                 .and()
@@ -34,7 +36,8 @@ public class SecurityConfig {
                         .logoutSuccessUrl("/"))
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/").permitAll()
-                        .requestMatchers("/user").permitAll()
+                        .requestMatchers("/user", "/error").permitAll()
+                        .requestMatchers("/api/**").permitAll()
                         .requestMatchers(toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login();
