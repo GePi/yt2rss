@@ -11,3 +11,7 @@ spring:
           google:
             client-id: 325803809182-01cotg0kfqmf7lvgk80sqlg6ea5gc5df.apps.googleusercontent.com
             client-secret: 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
+yt2rss:
+  channel-page:
+    sort-order: title
+    number-entries-on-page: 5

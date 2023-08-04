@@ -2,6 +2,7 @@ package farm.giggle.yt2rss.config;
 
 import farm.giggle.yt2rss.exceptions.ResourceAccessDeniedException;
 import farm.giggle.yt2rss.model.Channel;
+import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.serv.ChannelServiceImpl;
 import farm.giggle.yt2rss.serv.MixUserManagement;
 import lombok.AllArgsConstructor;
@@ -14,6 +15,7 @@ import org.springframework.security.core.context.SecurityContextHolder;
 import org.springframework.stereotype.Component;
 
 import java.util.Arrays;
+import java.util.Objects;
 
 @Aspect
 @Component
@@ -23,7 +25,10 @@ public class HasRightAspect {
 
     @Before(value = "@annotation(right)", argNames = "joinPoint,right")
     public void HasRightToChannelAnnotationHandler(JoinPoint joinPoint, HasRightToChannel right) throws ResourceAccessDeniedException {
-        Long channelId = getChannelIdParameterValue(joinPoint, right);
+        Long channelId = getParameterValue(joinPoint, right.paramNameChannelNumber());
+        if (channelId == null) {
+            throw new IllegalArgumentException("Missing parameter " + right.paramNameChannelNumber());
+        }
 
         Channel channel = channelService.getChannel(channelId);
         if (channel == null) {
@@ -37,15 +42,30 @@ public class HasRightAspect {
         }
     }
 
-    private static Long getChannelIdParameterValue(JoinPoint joinPoint, HasRightToChannel right) {
+    @Before(value = "@annotation(userAnnotation)", argNames = "joinPoint,userAnnotation")
+    public void HasRightToUserAnnotationHandler(JoinPoint joinPoint, HasRightToUser userAnnotation) throws ResourceAccessDeniedException {
+        Long userId = getParameterValue(joinPoint, userAnnotation.paramUserid());
+        if (userId == null) {
+            return;
+        }
+
+        SecurityContext context = SecurityContextHolder.getContext();
+        User user = ((MixUserManagement) context.getAuthentication().getPrincipal()).getUser();
+        if (user == null ||
+                !Objects.equals(user.getId(), userId) && !user.isAdmin()) {
+            //user.getRoles().stream().noneMatch(role -> role.getRoleName() == Role.RoleEnum.ADMIN)) {
+            throw new ResourceAccessDeniedException("User " + userId + " access is denied, access is not to your resource (all channels)");
+        }
+    }
+
+    private static Long getParameterValue(JoinPoint joinPoint, String paramName) {
         CodeSignature signature = (CodeSignature) joinPoint.getSignature();
         String[] parameterNames = signature.getParameterNames();
-        int i = Arrays.asList(parameterNames).indexOf(right.paramNameChannelNumber());
+        int i = Arrays.asList(parameterNames).indexOf(paramName);
         if (i < 0) {
-            throw new IllegalArgumentException("Missing parameter " + right.paramNameChannelNumber());
+            return null;
         }
         Object[] args = joinPoint.getArgs();
-        Long channelId = (Long) args[i];
-        return channelId;
+        return (Long) args[i];
     }
 }

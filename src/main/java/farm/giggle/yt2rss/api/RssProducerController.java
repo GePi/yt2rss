@@ -34,7 +34,7 @@ public class RssProducerController {
         return new ResponseEntity<>(xml, headers, HttpStatus.OK);
     }
 
-    @GetMapping(value = {"/user/{userId}", "/channel/{userId}/{timeInterval}"}, produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = {"/user/{userId}", "/user/{userId}/{timeInterval}"}, produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
     public ResponseEntity<String> getUserAllFilesRss(@PathVariable("userId") Long userId,
                                                      @PathVariable(value = "timeInterval", required = false) RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException, UserNotFoundException {

@@ -88,11 +88,14 @@
     </springProfile>
 
     <springProfile name="local">
+        <root level="ERROR">
+            <appender-ref ref="console"/>
+        </root>
         <logger name="farm.giggle.yt2rss" level="DEBUG">
             <appender-ref ref="applicationLog"/>
             <appender-ref ref="console"/>
         </logger>
-        <logger name="org.springframework" level="INFO">
+        <logger name="org.springframework" level="ERROR">
             <appender-ref ref="springLog"/>
             <appender-ref ref="console"/>
         </logger>

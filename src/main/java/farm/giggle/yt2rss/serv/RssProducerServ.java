@@ -19,9 +19,11 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.StringWriter;
+import java.time.OffsetDateTime;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Service()
 public class RssProducerServ {
@@ -77,7 +79,7 @@ public class RssProducerServ {
         RssFeed rssFeed = new RssFeed();
         rssFeed.setTitle("User feed");
         List<File> files = new ArrayList<>();
-        List<Channel> channels = channelService.getChannelList(user);
+        List<Channel> channels = channelService.getChannelList(user.getId());
         for (var channel : channels) {
             files.addAll(channel.getFileList());
         }
@@ -91,20 +93,24 @@ public class RssProducerServ {
     }
 
     private RssFeed addFilesIntoRssFeed(List<File> files, RssTimeIntervalEnum timeInterval, RssFeed rssFeed) {
-        Date dateWith = timeInterval.getDateFrom();
-        for (var file : files) {
-            if (dateWith.after(file.getDowloadedTime())) {
-                continue;
-            }
-            RssEntry rssEntry = new RssEntry();
-            rssEntry.setTitle("Заголовок файла");
-            rssEntry.setPublished(file.getPublishedTime());
-            rssEntry.setUpdated(file.getDowloadedTime());
-            RssLink rssLink = new RssLink();
-            rssLink.setHref(file.getDownloadedFileUrl1());
-            rssEntry.setLink(rssLink);
-            rssFeed.addRssEntry(rssEntry);
-        }
+        OffsetDateTime dateWith = timeInterval.getDateFrom();
+        rssFeed.setRssEntries(
+                files.stream()
+                        .filter(file -> Objects.nonNull(file.getDowloadedAt()))
+                        .filter(file -> dateWith.isBefore(file.getDowloadedAt()))
+                        .map(this::mapFileToRssEntry)
+                        .collect(Collectors.toList()));
         return rssFeed;
+    }
+
+    private RssEntry mapFileToRssEntry(File file) {
+        RssEntry rssEntry = new RssEntry();
+        rssEntry.setTitle(file.getTitle());
+        rssEntry.setPublished(file.getPublishedAt());
+        rssEntry.setUpdated(file.getDowloadedAt());
+        RssLink rssLink = new RssLink();
+        rssLink.setHref(file.getDownloadedFileUrl1());
+        rssEntry.setLink(rssLink);
+        return rssEntry;
     }
 }

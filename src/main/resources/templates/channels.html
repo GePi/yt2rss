@@ -6,6 +6,12 @@
 </head>
 <body>
 <h1>Список каналов</h1>
+<div>
+    <span>Страницы:</span>
+    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+        <a th:href="@{/channels(page=${pageNumber})}" th:text="${pageNumber}">1</a>
+    </span>
+</div>
 <table>
     <thead>
     <tr>
@@ -30,8 +36,12 @@
     </tr>
     </tbody>
 </table>
+
 <div>
     <a th:href="@{/channels/add-channel}">Добавить канал</a>
+</div>
+<div>
+    <a th:href="@{/}">На главную</a>
 </div>
 </body>
 </html>

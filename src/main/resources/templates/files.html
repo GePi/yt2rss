@@ -17,7 +17,7 @@
     <tbody>
     <tr th:each="file : ${files}">
         <td><a th:href="${file.getOriginalUrl}" th:text="${file.title}">Ссылка на файл</a></td>
-        <td th:text="${file.publishedTime}"></td>
+        <td th:text="${file.publishedAt}"></td>
         <th><a th:href="${file.downloadedFileUrl1}" th:text="${file.downloadedFileUrl1}">Ссылка на скаченный файл</a>
         </th>
     </tr>

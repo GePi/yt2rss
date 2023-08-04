@@ -1,38 +1,59 @@
 package farm.giggle.yt2rss.web;
 
-import farm.giggle.yt2rss.config.ExceptionConfig;
 import farm.giggle.yt2rss.config.HasRightToChannel;
+import farm.giggle.yt2rss.config.HasRightToUser;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.serv.ChannelServiceImpl;
 import farm.giggle.yt2rss.serv.MixUserManagement;
 import farm.giggle.yt2rss.youtube.Y2Rss;
 import lombok.extern.slf4j.Slf4j;
-import org.slf4j.Logger;
-import org.slf4j.LoggerFactory;
+import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
-import org.springframework.web.bind.annotation.*;
+import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
+import org.springframework.web.bind.annotation.RequestMapping;
+import org.springframework.web.bind.annotation.RequestParam;
 
-import java.util.List;
+import java.util.Objects;
+import java.util.stream.Collectors;
 
 @Controller
 @Slf4j
 @RequestMapping("/channels")
 public class ChannelController {
     private final ChannelServiceImpl channelService;
+    private final ApplicationConfiguration applicationConfiguration;
 
-    public ChannelController(ChannelServiceImpl channelService) {
+    public ChannelController(ChannelServiceImpl channelService, ApplicationConfiguration applicationConfiguration) {
         this.channelService = channelService;
-    }
-
-    @ModelAttribute(name = "channels")
-    public List<Channel> getChannelList(@AuthenticationPrincipal MixUserManagement principal) {
-        return channelService.getChannelList(principal.getUser());
+        this.applicationConfiguration = applicationConfiguration;
     }
 
     @GetMapping
-    public String channelsPage() {
+    @HasRightToUser
+    public String channelsPage(
+            @RequestParam(value = "userid", required = false) Long userid,
+            @RequestParam(value = "page", required = false) Integer page,
+            @RequestParam(value = "sort", required = false) ApplicationConfiguration.SortOrder sort,
+            @AuthenticationPrincipal MixUserManagement principal,
+            Model model) {
+        if (userid == null && principal.getUser() == null) {
+            throw new IllegalArgumentException("User need");
+        }
+
+        Integer pageNum = Objects.requireNonNullElse(page, 1) - 1;
+        ApplicationConfiguration.SortOrder pageSort = Objects.requireNonNullElse(sort, ApplicationConfiguration.SortOrder.TITLE);
+
+        Page<Channel> channelPage =
+                channelService.getChannelPage((userid != null) ? userid : principal.getUser().getId(),
+                        pageSort,
+                        pageNum,
+                        applicationConfiguration.getChannelPage().getNumberEntriesOnPage());
+
+        model.addAttribute("channels", channelPage.get().collect(Collectors.toList()));
+        model.addAttribute("totalPages", channelPage.getTotalPages());
         return "channels";
     }
 
@@ -62,8 +83,7 @@ public class ChannelController {
     @HasRightToChannel(paramNameChannelNumber = "channelId")
     public String channelFilesPage(@RequestParam("channelId") Long channelId,
                                    Model model) {
-        Logger log = LoggerFactory.getLogger(ExceptionConfig.class);
-        log.debug("FILES YYYYYYYYYYEEEEEEEEEE");
+        log.debug("channelFilesPage channelId=" + channelId);
 
         Channel channel = channelService.getChannel(channelId);
         if (channel == null) {

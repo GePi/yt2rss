@@ -5,8 +5,12 @@ import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.repo.ChannelRepo;
 import farm.giggle.yt2rss.repo.FileRepo;
+import farm.giggle.yt2rss.web.ApplicationConfiguration;
 import farm.giggle.yt2rss.youtube.RssFile;
 import farm.giggle.yt2rss.youtube.Y2Rss;
+import org.springframework.data.domain.Page;
+import org.springframework.data.domain.PageRequest;
+import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
 
 import java.util.*;
@@ -38,8 +42,15 @@ public class ChannelServiceImpl {
         channelRepo.deleteById(channelId);
     }
 
-    public List<Channel> getChannelList(User user) {
-        return channelRepo.findChannelsByUserId(user.getId());
+    public List<Channel> getChannelList(Long userId) {
+        return channelRepo.findChannelsByUserId(userId);
+    }
+
+    public Page<Channel> getChannelPage(Long userId, ApplicationConfiguration.SortOrder pageSort, Integer pageNum, Integer entriesOnPage) {
+        if (pageSort == ApplicationConfiguration.SortOrder.TITLE) {
+            return channelRepo.findChannelsByUserId(userId, PageRequest.of(pageNum, entriesOnPage, Sort.by("title")));
+        }
+        return channelRepo.findChannelsByUserId(userId, PageRequest.of(pageNum, entriesOnPage));
     }
 
     public List<Channel> getAll() {
@@ -60,21 +71,26 @@ public class ChannelServiceImpl {
 
     public void refreshFileList(Channel channel) {
         //TODO синхронизация? (для одного канала...)
+
         Y2Rss rss = Y2Rss.fromUrl(channel.getUrl());
         List<RssFile> rssFiles = (rss != null) ? rss.getFileList() : new ArrayList<>();
         List<File> dbFiles = channel.getFileList();
         dbFiles.sort(Comparator.comparing(File::getGuid));
 
         for (var rssFile : rssFiles) {
-            File file = new File();
-            file.setGuid(rssFile.getVideoId());
-            var foundIndex = Collections.binarySearch(dbFiles, file, Comparator.comparing(File::getGuid));
-            if ((foundIndex < 0) || (dbFiles.get(foundIndex).getPublishedTime().compareTo(rssFile.getTimeOfLastPublication()) < 0)) {
-                file.setTitle(rssFile.getTitle());
-                file.setGuid(rssFile.getVideoId());
-                file.setOriginalUrl(rssFile.getVideoUrl());
-                file.setPublishedTime(rssFile.getTimeOfLastPublication());
-                channel.addFile(file);
+            File dbFile = new File();
+            dbFile.setGuid(rssFile.getVideoId());
+            var foundIndex = Collections.binarySearch(dbFiles, dbFile, Comparator.comparing(File::getGuid));
+
+            if (foundIndex < 0) {
+                channel.addFile(dbFile);
+            } else {
+                dbFile = dbFiles.get(foundIndex);
+            }
+
+            if (!Objects.equals(dbFile.getPublishedAt(), rssFile.getPublishedAt()) ||
+                    !Objects.equals(dbFile.getUpdatedAt(), rssFile.getUpdatedAt())) {
+                mapRssFileToDbFile(rssFile, dbFile);
             }
         }
         channelRepo.save(channel);
@@ -82,5 +98,16 @@ public class ChannelServiceImpl {
 
     public void updateFile(File file) {
         fileRepo.save(file);
+    }
+
+    private void mapRssFileToDbFile(RssFile rssFile, File dbFile) {
+        dbFile.setTitle(rssFile.getTitle());
+        dbFile.setGuid(rssFile.getVideoId());
+        dbFile.setOriginalUrl(rssFile.getVideoUrl());
+        dbFile.setPublishedAt(rssFile.getPublishedAt());
+        dbFile.setUpdatedAt(rssFile.getUpdatedAt());
+        //TODO удалить в проде
+        dbFile.setDowloadedAt(rssFile.getPublishedAt());
+        dbFile.setDownloadedFileUrl1("http://Он_таки_скачен");
     }
 }

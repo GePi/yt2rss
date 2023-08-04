@@ -9,7 +9,6 @@ import java.io.IOException;
 import java.time.OffsetDateTime;
 import java.time.format.DateTimeFormatter;
 import java.util.ArrayList;
-import java.util.Date;
 import java.util.List;
 import java.util.Set;
 import java.util.regex.Matcher;
@@ -57,24 +56,22 @@ public class Y2Rss {
     }
 
     public List<RssFile> getFileList() {
-        List<RssFile> files = new ArrayList<>();
+        List<RssFile> rssFiles = new ArrayList<>();
         for (Element e : rssDocument.select("entry")) {
-            RssFile file = new RssFile();
-            file.setVideoId(e.select("yt|videoId").text());
-            file.setTitle(e.select("title").text());
-            file.setVideoUrl(e.select("link").attr("href"));
+            RssFile rssFile = new RssFile();
+
+            rssFile.setVideoId(e.select("yt|videoId").text());
+            rssFile.setTitle(e.select("title").text());
+            rssFile.setVideoUrl(e.select("link").attr("href"));
 
             String dateString = e.select("published").text();
-            OffsetDateTime offsetDateTime = OffsetDateTime.parse(dateString, youtubeDataTimeFormatter);
-            file.setPublished(Date.from(offsetDateTime.toInstant()));
-
+            rssFile.setPublishedAt(OffsetDateTime.parse(dateString, youtubeDataTimeFormatter));
             dateString = e.select("updated").text();
-            offsetDateTime = OffsetDateTime.parse(dateString, youtubeDataTimeFormatter);
-            file.setUpdated(Date.from(offsetDateTime.toInstant()));
+            rssFile.setUpdatedAt(OffsetDateTime.parse(dateString, youtubeDataTimeFormatter));
 
-            files.add(file);
+            rssFiles.add(rssFile);
         }
-        return files;
+        return rssFiles;
     }
 
     private static String extractChannelId(String url) {

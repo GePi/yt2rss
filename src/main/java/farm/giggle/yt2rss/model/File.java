@@ -25,12 +25,12 @@ public class File {
     @Column(name = "content_type_1")
     private String downloadedContentType1;
 
-    @Column(name = "published_at")
-    @Temporal(TemporalType.TIMESTAMP)
-    private java.util.Date publishedTime;
-    @Column(name = "downloaded_at")
-    @Temporal(TemporalType.DATE)
-    private java.util.Date dowloadedTime;
+    @Column()
+    private java.time.OffsetDateTime publishedAt;
+    @Column()
+    private java.time.OffsetDateTime updatedAt;
+    @Column()
+    private java.time.OffsetDateTime dowloadedAt;
 
     @ManyToOne(fetch = FetchType.LAZY)
     private Channel channel;
