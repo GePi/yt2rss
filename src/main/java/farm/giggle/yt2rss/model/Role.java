@@ -6,15 +6,13 @@ import lombok.NoArgsConstructor;
 
 @Data
 @NoArgsConstructor
-@Entity(name = "roles")
+@Entity
+@Table(name = "roles")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long Id;
-    @ManyToOne
-    private User user;
-    @Column
+    @Column(length = RoleEnum.MAX_LEN_ROLE_NAME)
     @Enumerated(EnumType.STRING)
     private RoleEnum roleName;
 
@@ -25,7 +23,9 @@ public class Role {
     }
 
     public enum RoleEnum {
-        ADMIN("SU"), USER("User");
+        ADMIN("Admin"), USER("User");
+
+        public static final int MAX_LEN_ROLE_NAME = 32;
 
         private final String description;
 
@@ -33,5 +33,8 @@ public class Role {
             this.description = description;
         }
 
+        public String getDescription() {
+            return description;
+        }
     }
 }

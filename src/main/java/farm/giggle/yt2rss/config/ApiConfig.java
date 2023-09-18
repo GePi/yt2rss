@@ -7,7 +7,7 @@ import org.springframework.web.servlet.config.annotation.PathMatchConfigurer;
 import org.springframework.web.servlet.config.annotation.WebMvcConfigurer;
 
 @Component
-public class ApiConfigurer implements WebMvcConfigurer {
+public class ApiConfig implements WebMvcConfigurer {
 
     private String apiVersion;
 

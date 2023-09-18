@@ -3,9 +3,12 @@ package farm.giggle.yt2rss.model;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;
+import org.springframework.lang.NonNull;
 
-import java.util.HashMap;
-import java.util.Map;
+import java.util.HashSet;
+import java.util.Iterator;
+import java.util.Set;
+import java.util.UUID;
 
 import static farm.giggle.yt2rss.model.Role.RoleEnum.ADMIN;
 
@@ -15,57 +18,54 @@ import static farm.giggle.yt2rss.model.Role.RoleEnum.ADMIN;
 @Table(name = "users")
 public class User {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
     private Long id;
-    @Column(name = "uname", nullable = false)
+    @Column(name = "UNAME", nullable = false)
     private String name;
     @Enumerated(EnumType.STRING)
-    @Column(nullable = false)
+    @Column(nullable = false,
+            length = Auth2ProviderEnum.MAX_LEN_PROVIDER_NAME)
     private Auth2ProviderEnum auth2Provider;
-    @Column(nullable = false)
+    @Column(nullable = false,
+            length = Auth2ProviderEnum.MAX_LEN_PROVIDER_ID)
     private String auth2Id;
-    @Column
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, fetch = FetchType.EAGER)
-    private Map<Role.RoleEnum, Role> roleMap = new HashMap();
-    //private List<Role> roles = new ArrayList<>();
 
-    public Role addRole(Role role) {
-        if (roleMap.containsKey(role.getRoleName())) {
-            return roleMap.get(role.getRoleName());
-        }
-        roleMap.put(role.getRoleName(), role);
-        role.setUser(this);
-        return role;
+    @Column(nullable = false,
+            unique = true)
+    private UUID uuid;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    private Set<UserRole> userRoles = new HashSet<>();
+
+    public User() {
+    }
+
+    public User(String name, Auth2ProviderEnum auth2Provider, String auth2Id, UUID uuid) {
+        this.name = name;
+        this.auth2Provider = auth2Provider;
+        this.auth2Id = auth2Id;
+        this.uuid = uuid;
+    }
+
+    public void addRole(@NonNull Role role) {
+        userRoles.add(new UserRole(this, role));
     }
 
     public void removeRole(Role role) {
-        roleMap.remove(role.getRoleName());
-        role.setUser(null);
+        Iterator<UserRole> iterator = userRoles.iterator();
+        while (iterator.hasNext()) {
+            UserRole userRole = iterator.next();
+            if ((userRole.getUser().equals(this) &&
+                    (userRole.getRole().equals(role)))) {
+                iterator.remove();
+            }
+        }
     }
 
     public boolean isAdmin() {
-        return roleMap.containsKey(ADMIN);
-    }
-  /*  public Role addRole(Role role) {
-        for (var existRole : roles) {
-            if (existRole.getRoleName() == role.getRoleName()) {
-                return existRole;
-            }
+        for (UserRole userRole : userRoles) {
+            if (userRole.getRole().getRoleName().equals(ADMIN)) return true;
         }
-        roles.add(role);
-        role.setUser(this);
-        return role;
+        return false;
     }
-
-    public void removeRole(Role role) {
-        for (Iterator<Role> roleIterator = roles.iterator(); roleIterator.hasNext(); ) {
-            Role existRole = roleIterator.next();
-            if (existRole.getRoleName() == role.getRoleName()) {
-                roleIterator.remove();
-                role.setUser(null);
-                return;
-            }
-        }
-    }*/
 }

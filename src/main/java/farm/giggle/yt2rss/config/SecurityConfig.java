@@ -1,6 +1,6 @@
 package farm.giggle.yt2rss.config;
 
-import farm.giggle.yt2rss.repo.UserRepo;
+import farm.giggle.yt2rss.model.repo.UserRepo;
 import farm.giggle.yt2rss.serv.ExtendedOAuth2UserService;
 import farm.giggle.yt2rss.serv.ExtendedOidcUserService;
 import org.springframework.context.annotation.Bean;
@@ -16,7 +16,6 @@ import static org.springframework.boot.autoconfigure.security.servlet.PathReques
 
 @Configuration
 @EnableWebSecurity
-//@EnableAspectJAutoProxy
 public class SecurityConfig {
 
     private final UserRepo userRepo;
@@ -37,7 +36,7 @@ public class SecurityConfig {
                 .authorizeHttpRequests(authorize -> authorize
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/user", "/error").permitAll()
-                        .requestMatchers("/api/**").permitAll()
+                        .requestMatchers("/feeds/**").permitAll()
                         .requestMatchers(toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login();

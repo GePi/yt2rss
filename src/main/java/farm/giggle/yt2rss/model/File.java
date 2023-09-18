@@ -10,8 +10,8 @@ import lombok.Setter;
 @Table(name = "files")
 public class File {
     @Id
-    @GeneratedValue(strategy = GenerationType.IDENTITY)
-    @Column(name = "id", nullable = false)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @Column(name = "id")
     private Long id;
     @Column(name = "guid")
     private String guid;
@@ -25,13 +25,14 @@ public class File {
     @Column(name = "content_type_1")
     private String downloadedContentType1;
 
-    @Column()
+    @Column
     private java.time.OffsetDateTime publishedAt;
-    @Column()
+    @Column
     private java.time.OffsetDateTime updatedAt;
-    @Column()
+    @Column
     private java.time.OffsetDateTime dowloadedAt;
 
-    @ManyToOne(fetch = FetchType.LAZY)
+    @ManyToOne(fetch = FetchType.LAZY, optional = false)
+    @JoinColumn(name = "CHANNEL_ID")
     private Channel channel;
 }

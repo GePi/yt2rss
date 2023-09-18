@@ -1,5 +1,6 @@
-package farm.giggle.yt2rss.api;
+package farm.giggle.yt2rss.web;
 
+import farm.giggle.yt2rss.api.RssTimeIntervalEnum;
 import farm.giggle.yt2rss.exceptions.JaxbMarshallerException;
 import farm.giggle.yt2rss.exceptions.ResourceNotFoundException;
 import farm.giggle.yt2rss.exceptions.UserNotFoundException;
@@ -14,9 +15,11 @@ import org.springframework.http.ResponseEntity;
 import org.springframework.stereotype.Controller;
 import org.springframework.web.bind.annotation.*;
 
+import java.util.UUID;
+
 @Slf4j
 @Controller
-@RequestMapping("/api/v1/rss")
+@RequestMapping("/feeds")
 public class RssProducerController {
     RssProducerServ rssProducerServ;
 
@@ -24,21 +27,21 @@ public class RssProducerController {
         this.rssProducerServ = rssProducerServ;
     }
 
-    @GetMapping(value = {"/channel/{channelId}", "/channel/{channelId}/{timeInterval}"}, produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = {"/channel/{channelUUID}", "/channel/{channelUUID}/{timeInterval}"}, produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
-    public ResponseEntity<String> getChannelRss(@PathVariable("channelId") Long channelId,
+    public ResponseEntity<String> getChannelRss(@PathVariable("channelUUID") UUID channelUUID,
                                                 @PathVariable(value = "timeInterval", required = false) RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException, ResourceNotFoundException {
-        String xml = rssProducerServ.getChannelRss(channelId, timeInterval);
+        String xml = rssProducerServ.getChannelRss(channelUUID, timeInterval);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
         return new ResponseEntity<>(xml, headers, HttpStatus.OK);
     }
 
-    @GetMapping(value = {"/user/{userId}", "/user/{userId}/{timeInterval}"}, produces = MediaType.APPLICATION_XML_VALUE)
+    @GetMapping(value = {"/user/{userUUID}", "/user/{userUUID}/{timeInterval}"}, produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
-    public ResponseEntity<String> getUserAllFilesRss(@PathVariable("userId") Long userId,
+    public ResponseEntity<String> getUserAllFilesRss(@PathVariable("userUUID") UUID userUUID,
                                                      @PathVariable(value = "timeInterval", required = false) RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException, UserNotFoundException {
-        String xml = rssProducerServ.getUserRss(userId, timeInterval);
+        String xml = rssProducerServ.getUserRss(userUUID, timeInterval);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
         return new ResponseEntity<>(xml, headers, HttpStatus.OK);

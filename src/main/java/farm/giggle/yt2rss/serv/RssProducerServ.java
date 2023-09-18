@@ -1,15 +1,15 @@
 package farm.giggle.yt2rss.serv;
 
 import farm.giggle.yt2rss.api.RssTimeIntervalEnum;
-import farm.giggle.yt2rss.atom.RssEntry;
-import farm.giggle.yt2rss.atom.RssFeed;
-import farm.giggle.yt2rss.atom.RssLink;
 import farm.giggle.yt2rss.exceptions.JaxbMarshallerException;
 import farm.giggle.yt2rss.exceptions.ResourceNotFoundException;
 import farm.giggle.yt2rss.exceptions.UserNotFoundException;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
+import farm.giggle.yt2rss.producedRssStructure.RssEntry;
+import farm.giggle.yt2rss.producedRssStructure.RssFeed;
+import farm.giggle.yt2rss.producedRssStructure.RssLink;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -19,13 +19,12 @@ import org.springframework.stereotype.Service;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.StringWriter;
-import java.time.OffsetDateTime;
 import java.util.ArrayList;
 import java.util.List;
-import java.util.Objects;
+import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service()
+@Service
 public class RssProducerServ {
     private final ChannelServiceImpl channelService;
     private final UserServiceImpl userService;
@@ -35,14 +34,14 @@ public class RssProducerServ {
         this.userService = userService;
     }
 
-    public String getUserRss(Long userId, RssTimeIntervalEnum timeInterval) throws UserNotFoundException, JaxbMarshallerException {
-        User user = userService.getUserById(userId);
+    public String getUserRss(UUID userUUID, RssTimeIntervalEnum timeInterval) throws UserNotFoundException, JaxbMarshallerException {
+        User user = userService.getUserByUUID(userUUID);
         RssFeed rssFeed = createRssFeed(user, (timeInterval == null) ? RssTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
         return marshal(rssFeed);
     }
 
-    public String getChannelRss(Long channelId, RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException, ResourceNotFoundException {
-        Channel channel = channelService.getChannel(channelId);
+    public String getChannelRss(UUID channelUUID, RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException, ResourceNotFoundException {
+        Channel channel = channelService.getChannel(channelUUID);
         if (channel == null) {
             throw new ResourceNotFoundException("Канал с таким номером не найден");
         }
@@ -77,27 +76,25 @@ public class RssProducerServ {
 
     private RssFeed createRssFeed(User user, RssTimeIntervalEnum timeInterval) {
         RssFeed rssFeed = new RssFeed();
-        rssFeed.setTitle("User feed");
+        rssFeed.setTitle("Y2RSS: user feed");
         List<File> files = new ArrayList<>();
         List<Channel> channels = channelService.getChannelList(user.getId());
         for (var channel : channels) {
-            files.addAll(channel.getFileList());
+            files.addAll(channelService.getFileListDownloadedAfter(timeInterval.getDateFrom()));
         }
-        return addFilesIntoRssFeed(files, timeInterval, rssFeed);
+        return addFilesIntoRssFeed(files, rssFeed);
     }
 
     private RssFeed createRssFeed(Channel channel, RssTimeIntervalEnum timeInterval) {
         RssFeed rssFeed = new RssFeed();
         rssFeed.setTitle(channel.getTitle());
-        return addFilesIntoRssFeed(channel.getFileList(), timeInterval, rssFeed);
+        return addFilesIntoRssFeed(
+                channelService.getFileListDownloadedAfter(channel, timeInterval.getDateFrom()), rssFeed);
     }
 
-    private RssFeed addFilesIntoRssFeed(List<File> files, RssTimeIntervalEnum timeInterval, RssFeed rssFeed) {
-        OffsetDateTime dateWith = timeInterval.getDateFrom();
+    private RssFeed addFilesIntoRssFeed(List<File> files, RssFeed rssFeed) {
         rssFeed.setRssEntries(
                 files.stream()
-                        .filter(file -> Objects.nonNull(file.getDowloadedAt()))
-                        .filter(file -> dateWith.isBefore(file.getDowloadedAt()))
                         .map(this::mapFileToRssEntry)
                         .collect(Collectors.toList()));
         return rssFeed;

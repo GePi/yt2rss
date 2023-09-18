@@ -1,18 +1,20 @@
 package farm.giggle.yt2rss.serv;
 
+import farm.giggle.yt2rss.config.ApplicationConfig;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
-import farm.giggle.yt2rss.repo.ChannelRepo;
-import farm.giggle.yt2rss.repo.FileRepo;
-import farm.giggle.yt2rss.web.ApplicationConfiguration;
+import farm.giggle.yt2rss.model.repo.ChannelRepo;
+import farm.giggle.yt2rss.model.repo.FileRepo;
 import farm.giggle.yt2rss.youtube.RssFile;
 import farm.giggle.yt2rss.youtube.Y2Rss;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.data.domain.Sort;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 
+import java.time.OffsetDateTime;
 import java.util.*;
 
 @Service
@@ -29,11 +31,10 @@ public class ChannelServiceImpl {
         return channelRepo.findById(id).orElseGet(() -> null);
     }
 
-    public Channel addChannel(String channelUrl, String title, User user) {
-        Channel channel = new Channel();
-        channel.setUser(user);
-        channel.setUrl(channelUrl);
-        channel.setTitle(title);
+    @Transactional
+    public Channel addChannel(String channelUrl, String title, User user, List<File> fileList) {
+        Channel channel = new Channel(channelUrl, title, "", user);
+        fileList.forEach(channel::addFile);
         channelRepo.save(channel);
         return channel;
     }
@@ -42,12 +43,16 @@ public class ChannelServiceImpl {
         channelRepo.deleteById(channelId);
     }
 
+    public Channel getChannel(UUID channelUUID) {
+        return channelRepo.findByUuid(channelUUID);
+    }
+
     public List<Channel> getChannelList(Long userId) {
         return channelRepo.findChannelsByUserId(userId);
     }
 
-    public Page<Channel> getChannelPage(Long userId, ApplicationConfiguration.SortOrder pageSort, Integer pageNum, Integer entriesOnPage) {
-        if (pageSort == ApplicationConfiguration.SortOrder.TITLE) {
+    public Page<Channel> getChannelPage(Long userId, ApplicationConfig.SortOrder pageSort, Integer pageNum, Integer entriesOnPage) {
+        if (pageSort == ApplicationConfig.SortOrder.TITLE) {
             return channelRepo.findChannelsByUserId(userId, PageRequest.of(pageNum, entriesOnPage, Sort.by("title")));
         }
         return channelRepo.findChannelsByUserId(userId, PageRequest.of(pageNum, entriesOnPage));
@@ -61,6 +66,14 @@ public class ChannelServiceImpl {
         return fileRepo.findFilesByChannel(channel);
     }
 
+    public List<File> getFileListDownloadedAfter(Channel channel, OffsetDateTime downloadedAt) {
+        return fileRepo.findByChannelIdAndDowloadedAtAfter(channel.getId(), downloadedAt).stream().toList();
+    }
+
+    public List<File> getFileListDownloadedAfter(OffsetDateTime downloadedAt) {
+        return fileRepo.findByDowloadedAtAfter(downloadedAt).stream().toList();
+    }
+
     public List<File> getNotDownloadedFileList(Channel channel) {
         return fileRepo.findFilesByChannelAndDownloadedFileUrl1IsNull(channel);
     }
@@ -70,8 +83,6 @@ public class ChannelServiceImpl {
     }
 
     public void refreshFileList(Channel channel) {
-        //TODO синхронизация? (для одного канала...)
-
         Y2Rss rss = Y2Rss.fromUrl(channel.getUrl());
         List<RssFile> rssFiles = (rss != null) ? rss.getFileList() : new ArrayList<>();
         List<File> dbFiles = channel.getFileList();

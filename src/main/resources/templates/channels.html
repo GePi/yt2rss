@@ -19,6 +19,7 @@
         <th>Название</th>
         <th>Список файлов</th>
         <th>Действия</th>
+        <th>Feed</th>
     </tr>
     </thead>
     <tbody>
@@ -32,6 +33,10 @@
 
                 <button type="submit" value="Удалить"><img src="trash.png" width="15px"></button>
             </form>
+        </td>
+        <td>
+            <a th:href="@{/feeds/chanel/{channel_uuid}/LAST_DAY(channel_uuid=${channel.uuid})}">За день</a>
+            <a th:href="@{/feeds/chanel/{channel_uuid}(channel_uuid=${channel.uuid})}">Полный</a>
         </td>
     </tr>
     </tbody>

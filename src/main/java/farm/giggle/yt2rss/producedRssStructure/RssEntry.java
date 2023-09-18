@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.atom;
+package farm.giggle.yt2rss.producedRssStructure;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;

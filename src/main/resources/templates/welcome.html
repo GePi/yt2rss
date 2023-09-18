@@ -18,11 +18,17 @@
 </header>
 <main>
     <div class="to_auth">
-        <span>Login as ...</span>
+        <span>Login as </span>
     </div>
+
+    <div class="to_auth">
+        All user files: <a th:href="@{/feeds/user/{user_uuid}(user_uuid=${user_uuid})}">all user files feed</a>
+    </div>
+
     <div class="to_auth">
         To channels: <a href="/channels">click here</a>
     </div>
+
     <div class="unauthenticated">
         With GitHub: <a href="/oauth2/authorization/github">click here</a>
     </div>

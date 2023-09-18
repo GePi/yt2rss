@@ -1,10 +1,12 @@
 package farm.giggle.yt2rss.web;
 
+import farm.giggle.yt2rss.config.ApplicationConfig;
 import farm.giggle.yt2rss.config.HasRightToChannel;
 import farm.giggle.yt2rss.config.HasRightToUser;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.serv.ChannelServiceImpl;
 import farm.giggle.yt2rss.serv.MixUserManagement;
+import farm.giggle.yt2rss.youtube.RssToDBConverter;
 import farm.giggle.yt2rss.youtube.Y2Rss;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
@@ -24,11 +26,11 @@ import java.util.stream.Collectors;
 @RequestMapping("/channels")
 public class ChannelController {
     private final ChannelServiceImpl channelService;
-    private final ApplicationConfiguration applicationConfiguration;
+    private final ApplicationConfig applicationConfig;
 
-    public ChannelController(ChannelServiceImpl channelService, ApplicationConfiguration applicationConfiguration) {
+    public ChannelController(ChannelServiceImpl channelService, ApplicationConfig applicationConfig) {
         this.channelService = channelService;
-        this.applicationConfiguration = applicationConfiguration;
+        this.applicationConfig = applicationConfig;
     }
 
     @GetMapping
@@ -36,7 +38,7 @@ public class ChannelController {
     public String channelsPage(
             @RequestParam(value = "userid", required = false) Long userid,
             @RequestParam(value = "page", required = false) Integer page,
-            @RequestParam(value = "sort", required = false) ApplicationConfiguration.SortOrder sort,
+            @RequestParam(value = "sort", required = false) ApplicationConfig.SortOrder sort,
             @AuthenticationPrincipal MixUserManagement principal,
             Model model) {
         if (userid == null && principal.getUser() == null) {
@@ -44,13 +46,13 @@ public class ChannelController {
         }
 
         Integer pageNum = Objects.requireNonNullElse(page, 1) - 1;
-        ApplicationConfiguration.SortOrder pageSort = Objects.requireNonNullElse(sort, ApplicationConfiguration.SortOrder.TITLE);
+        ApplicationConfig.SortOrder pageSort = Objects.requireNonNullElse(sort, ApplicationConfig.SortOrder.TITLE);
 
         Page<Channel> channelPage =
                 channelService.getChannelPage((userid != null) ? userid : principal.getUser().getId(),
                         pageSort,
                         pageNum,
-                        applicationConfiguration.getChannelPage().getNumberEntriesOnPage());
+                        applicationConfig.getChannelPage().getNumberEntriesOnPage());
 
         model.addAttribute("channels", channelPage.get().collect(Collectors.toList()));
         model.addAttribute("totalPages", channelPage.getTotalPages());
@@ -67,7 +69,12 @@ public class ChannelController {
                                      @AuthenticationPrincipal MixUserManagement principal) {
         Y2Rss rss = Y2Rss.fromUrl(urlInput.trim());
         if (rss != null) {
-            channelService.addChannel(rss.getUrl(), rss.getTitle(), principal.getUser());
+            channelService.addChannel(
+                    rss.getUrl(),
+                    rss.getTitle(),
+                    principal.getUser(),
+                    rss.getFileList().stream().map(RssToDBConverter::RssFile2DBFile).toList());
+            // channelService.refreshFileList(channel);
         }
         return "redirect:/channels";
     }
@@ -89,7 +96,6 @@ public class ChannelController {
         if (channel == null) {
             return "redirect:/channels";
         }
-        channelService.refreshFileList(channel);
         model.addAttribute("files", channelService.getFileList(channel));
         model.addAttribute("channel", channel);
         return "files";
