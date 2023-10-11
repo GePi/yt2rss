@@ -6,11 +6,8 @@ import lombok.Setter;
 import org.springframework.lang.NonNull;
 
 import java.util.HashSet;
-import java.util.Iterator;
 import java.util.Set;
 import java.util.UUID;
-
-import static farm.giggle.yt2rss.model.Role.RoleEnum.ADMIN;
 
 @Getter
 @Setter
@@ -34,7 +31,10 @@ public class User {
             unique = true)
     private UUID uuid;
 
-    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true)
+    @Version
+    private int version;
+
+    @OneToMany(mappedBy = "user", cascade = CascadeType.ALL, orphanRemoval = true, fetch = FetchType.LAZY)
     private Set<UserRole> userRoles = new HashSet<>();
 
     public User() {
@@ -52,20 +52,7 @@ public class User {
     }
 
     public void removeRole(Role role) {
-        Iterator<UserRole> iterator = userRoles.iterator();
-        while (iterator.hasNext()) {
-            UserRole userRole = iterator.next();
-            if ((userRole.getUser().equals(this) &&
-                    (userRole.getRole().equals(role)))) {
-                iterator.remove();
-            }
-        }
-    }
-
-    public boolean isAdmin() {
-        for (UserRole userRole : userRoles) {
-            if (userRole.getRole().getRoleName().equals(ADMIN)) return true;
-        }
-        return false;
+        userRoles.removeIf(userRole -> (userRole.getUser().equals(this) &&
+                (userRole.getRole().equals(role))));
     }
 }

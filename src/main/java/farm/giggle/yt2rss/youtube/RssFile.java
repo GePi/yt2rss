@@ -9,12 +9,9 @@ import java.time.OffsetDateTime;
 @NoArgsConstructor
 public class RssFile {
     private String videoId;
+    private String videoIdOld;
     private String videoUrl;
     private String title;
     private OffsetDateTime publishedAt;
     private OffsetDateTime updatedAt;
-
-    public OffsetDateTime getTimeOfLastPublication() {
-        return (updatedAt == null || publishedAt.isBefore(updatedAt)) ? publishedAt : updatedAt;
-    }
 }

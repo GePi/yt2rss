@@ -1,6 +1,7 @@
 package farm.giggle.yt2rss.api;
 
-import java.time.OffsetDateTime;
+import java.time.LocalDateTime;
+import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
 public enum RssTimeIntervalEnum {
@@ -21,7 +22,7 @@ public enum RssTimeIntervalEnum {
         this.chronoUnit = ChronoUnit.FOREVER;
     }
 
-    public OffsetDateTime getDateFrom() {
-        return (this == FAR_FAR_AWAY) ? OffsetDateTime.MIN : OffsetDateTime.now().minus(minusChronUnitsVal, ChronoUnit.MINUTES);
+    public LocalDateTime getDateFrom() {
+        return (this == FAR_FAR_AWAY) ? LocalDateTime.of(1900, 1, 1, 0, 0) : LocalDateTime.now(ZoneOffset.UTC).minus(minusChronUnitsVal, chronoUnit);
     }
 }

@@ -1,0 +1,48 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Список пользователей</title>
+</head>
+<body>
+<h1>Список пользователей</h1>
+<div>
+    <span>Страницы:</span>
+    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+        <a th:href="@{/users(page=${pageNumber})}" th:text="${pageNumber}">1</a>
+    </span>
+</div>
+<table>
+    <thead>
+    <tr>
+        <th>Id пользователя</th>
+        <th>Имя пользователя</th>
+        <th>Id в системе Auth2</th>
+        <th>Система Auth2</th>
+        <th>UUID</th>
+        <th>Удалить пользователя</th>
+        <th>Каналы пользователя</th>
+    </tr>
+    </thead>
+    <tbody>
+    <tr th:each="user : ${users}">
+        <td th:text="${user.id}"></td>
+        <td th:text="${user.name}"></td>
+        <td th:text="${user.auth2Id}"></td>
+        <td th:text="${user.auth2Provider}"></td>
+        <td th:text="${user.uuid}"></td>
+        <td>
+            <form th:action="@{/users/delete/}" method="post">
+                <input hidden th:value="${user.id}" name="userId">
+                <button type="submit" value="Удалить"><img src="trash.png" width="15px" alt="Удалить"></button>
+            </form>
+        </td>
+        <td><a th:href="@{/channels(userId=${user.id})}">Перейти к каналам</a></td>
+    </tr>
+    </tbody>
+</table>
+<div>
+    <a th:href="@{/}">На главную</a>
+</div>
+</body>
+</html>

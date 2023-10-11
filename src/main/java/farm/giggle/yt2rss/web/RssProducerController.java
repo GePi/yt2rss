@@ -19,7 +19,7 @@ import java.util.UUID;
 
 @Slf4j
 @Controller
-@RequestMapping("/feeds")
+@RequestMapping("/rss")
 public class RssProducerController {
     RssProducerServ rssProducerServ;
 

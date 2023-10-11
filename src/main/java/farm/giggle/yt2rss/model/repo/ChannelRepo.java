@@ -12,6 +12,8 @@ import java.util.UUID;
 @Repository
 public interface ChannelRepo extends JpaRepository<Channel, Long> {
     List<Channel> findChannelsByUserId(Long userId);
+
     Page<Channel> findChannelsByUserId(Long userId, Pageable pageable);
+
     Channel findByUuid(UUID channelUUID);
 }

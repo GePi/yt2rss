@@ -9,7 +9,9 @@
 <form method="post" th:action="@{/channels/add-channel}">
     <label for="url-input">URL канала:</label>
     <input type="text" id="url-input" name="url" placeholder="Введите URL канала">
-
+    <th:block th:each="sessionParam : ${sessionParams}">
+        <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}" />
+    </th:block>
     <br>
     <button type="submit">Добавить</button>
 </form>

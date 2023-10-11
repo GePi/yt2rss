@@ -8,6 +8,5 @@ import static java.lang.annotation.RetentionPolicy.RUNTIME;
 
 @Target(METHOD)
 @Retention(RUNTIME)
-public @interface HasRightToUser {
-    String paramUserid() default "userId";
+public @interface HasRightToUsers {
 }

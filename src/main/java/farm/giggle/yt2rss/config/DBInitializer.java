@@ -1,29 +1,18 @@
 package farm.giggle.yt2rss.config;
 
 
-import farm.giggle.yt2rss.model.Auth2ProviderEnum;
-import farm.giggle.yt2rss.model.Role;
-import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.model.repo.UserRepo;
-import farm.giggle.yt2rss.serv.ChannelServiceImpl;
-import farm.giggle.yt2rss.youtube.RssToDBConverter;
-import farm.giggle.yt2rss.youtube.Y2Rss;
+import farm.giggle.yt2rss.serv.ChannelService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;
 
-import java.util.ArrayList;
-import java.util.UUID;
-
-import static farm.giggle.yt2rss.model.Role.RoleEnum.ADMIN;
-import static farm.giggle.yt2rss.model.Role.RoleEnum.USER;
-
 @Component
 public class DBInitializer {
-    private ChannelServiceImpl channelService;
-    private UserRepo userRepo;
+    private final ChannelService channelService;
+    private final UserRepo userRepo;
 
-    public DBInitializer(ChannelServiceImpl channelService, UserRepo userRepo) {
+    public DBInitializer(ChannelService channelService, UserRepo userRepo) {
         this.channelService = channelService;
         this.userRepo = userRepo;
     }
@@ -31,6 +20,7 @@ public class DBInitializer {
     @PostConstruct
     @Transactional
     public void insertData() {
+/*
         User user = new User("SK", Auth2ProviderEnum.GITHUB, "13550159", UUID.randomUUID());
         user.addRole(Role.from(USER));
         user.addRole(Role.from(ADMIN));
@@ -52,6 +42,7 @@ public class DBInitializer {
                         rss.getUrl(),
                         rss.getTitle(),
                         user,
-                        rss.getFileList().stream().map(RssToDBConverter::RssFile2DBFile).toList()));
+                        rss.getFileList().stream().map(RssToDBConverter::rssFile2DBFile).toList()));
+*/
     }
 }

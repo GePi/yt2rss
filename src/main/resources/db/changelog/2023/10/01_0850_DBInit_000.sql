@@ -1,0 +1,53 @@
+-- liquibase formatted sql
+
+-- changeset GePi:1696139779148-1
+CREATE SEQUENCE  IF NOT EXISTS "channel_seq" AS bigint START WITH 1 INCREMENT BY 50 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1;
+
+-- changeset GePi:1696139779148-2
+CREATE SEQUENCE  IF NOT EXISTS "files_seq" AS bigint START WITH 1 INCREMENT BY 50 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1;
+
+-- changeset GePi:1696139779148-3
+CREATE SEQUENCE  IF NOT EXISTS "roles_seq" AS bigint START WITH 1 INCREMENT BY 50 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1;
+
+-- changeset GePi:1696139779148-4
+CREATE SEQUENCE  IF NOT EXISTS "users_seq" AS bigint START WITH 1 INCREMENT BY 50 MINVALUE 1 MAXVALUE 9223372036854775807 CACHE 1;
+
+-- changeset GePi:1696139779148-5
+CREATE TABLE "channel" ("id" BIGINT NOT NULL, "title" VARCHAR(255) NOT NULL, "url" VARCHAR(255) NOT NULL, "uuid" UUID NOT NULL, "user_id" BIGINT NOT NULL, CONSTRAINT "channel_pkey" PRIMARY KEY ("id"));
+
+-- changeset GePi:1696139779148-6
+CREATE TABLE "files" ("id" BIGINT NOT NULL, "downloaded_at" TIMESTAMP WITHOUT TIME ZONE, "downloaded_content_type" VARCHAR(255), "downloaded_url" VARCHAR(255), "original_url" VARCHAR(255) NOT NULL, "published_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL, "title" VARCHAR(255) NOT NULL, "updated_at" TIMESTAMP WITHOUT TIME ZONE NOT NULL, "video_id" VARCHAR(255) NOT NULL, "channel_id" BIGINT NOT NULL, CONSTRAINT "files_pkey" PRIMARY KEY ("id"));
+
+-- changeset GePi:1696139779148-7
+CREATE TABLE "roles" ("id" BIGINT NOT NULL, "role_name" VARCHAR(32), CONSTRAINT "roles_pkey" PRIMARY KEY ("id"));
+
+-- changeset GePi:1696139779148-8
+CREATE TABLE "user_roles" ("created_at" TIMESTAMP WITHOUT TIME ZONE, "user_id" BIGINT NOT NULL, "role_id" BIGINT NOT NULL);
+
+-- changeset GePi:1696139779148-9
+CREATE TABLE "users" ("id" BIGINT NOT NULL, "auth2id" VARCHAR(32) NOT NULL, "auth2provider" VARCHAR(10) NOT NULL, "uname" VARCHAR(255) NOT NULL, "uuid" UUID NOT NULL, CONSTRAINT "users_pkey" PRIMARY KEY ("id"));
+
+-- changeset GePi:1696139779148-10
+ALTER TABLE "user_roles" ADD CONSTRAINT "user_roles_pkey" PRIMARY KEY ("role_id", "user_id");
+
+-- changeset GePi:1696139779148-11
+ALTER TABLE "files" ADD CONSTRAINT "file_in_channel" UNIQUE ("channel_id", "video_id");
+
+-- changeset GePi:1696139779148-12
+ALTER TABLE "users" ADD CONSTRAINT "constraint_users_uuid" UNIQUE ("uuid");
+
+-- changeset GePi:1696139779148-13
+ALTER TABLE "channel" ADD CONSTRAINT "constraint_channel_uuid" UNIQUE ("uuid");
+
+-- changeset GePi:1696139779148-14
+ALTER TABLE "files" ADD CONSTRAINT "fk_files_channel_id" FOREIGN KEY ("channel_id") REFERENCES "channel" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+-- changeset GePi:1696139779148-15
+ALTER TABLE "user_roles" ADD CONSTRAINT "fk_role_id" FOREIGN KEY ("role_id") REFERENCES "roles" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+-- changeset GePi:1696139779148-16
+ALTER TABLE "user_roles" ADD CONSTRAINT "fk_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION;
+
+-- changeset GePi:1696139779148-17
+ALTER TABLE "channel" ADD CONSTRAINT "fk_channel_user_id" FOREIGN KEY ("user_id") REFERENCES "users" ("id") ON UPDATE NO ACTION ON DELETE NO ACTION;
+

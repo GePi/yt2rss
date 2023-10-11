@@ -9,8 +9,11 @@
 <div>
     <span>Страницы:</span>
     <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
-        <a th:href="@{/channels(page=${pageNumber})}" th:text="${pageNumber}">1</a>
+    <a th:href='@{/channels(page=${pageNumber})}+${sessionParamsString}'
+       th:text="${pageNumber}">1</a>
     </span>
+
+
 </div>
 <table>
     <thead>
@@ -26,24 +29,27 @@
     <tr th:each="channel : ${channels}">
         <td><a th:href="${channel.url}" th:text="${channel.url}">Ссылка на канал</a></td>
         <td th:text="${channel.title}"></td>
-        <td><a th:href="@{/channels/files(channelId=${channel.id})}">Файлы >></a></td>
+        <td><a th:href='@{/channels/files(channelId=${channel.id})}+${sessionParams.getParamString()}'>Файлы >></a></td>
         <td>
             <form th:action="@{/channels/del-channel}" method="post">
                 <input hidden th:value="${channel.id}" name="channelId">
-
-                <button type="submit" value="Удалить"><img src="trash.png" width="15px"></button>
+                <th:block th:each="sessionParam : ${sessionParams}">
+                    <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}"/>
+                </th:block>
+                <button type="submit" value="Удалить"><img src="trash.png" width="15px" alt="Удалить"></button>
             </form>
         </td>
         <td>
-            <a th:href="@{/feeds/chanel/{channel_uuid}/LAST_DAY(channel_uuid=${channel.uuid})}">За день</a>
-            <a th:href="@{/feeds/chanel/{channel_uuid}(channel_uuid=${channel.uuid})}">Полный</a>
+            <a th:href="@{/rss/channel/{channel_uuid}/LAST_DAY(channel_uuid=${channel.uuid})}">За день</a>
+            <a th:href="@{/rss/channel/{channel_uuid}(channel_uuid=${channel.uuid})}">Полный</a>
         </td>
     </tr>
     </tbody>
 </table>
 
+
 <div>
-    <a th:href="@{/channels/add-channel}">Добавить канал</a>
+    <a th:href='@{/channels/add-channel(ch=0)}+${sessionParamsString}'>Добавить канал</a>
 </div>
 <div>
     <a th:href="@{/}">На главную</a>

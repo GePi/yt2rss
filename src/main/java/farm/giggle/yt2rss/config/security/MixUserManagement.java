@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.serv;
+package farm.giggle.yt2rss.config.security;
 
 import farm.giggle.yt2rss.model.User;
 

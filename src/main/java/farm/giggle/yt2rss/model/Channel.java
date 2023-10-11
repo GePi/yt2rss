@@ -9,7 +9,7 @@ import java.util.UUID;
 
 @Getter
 @Entity
-@Table(name = "channel")
+@Table(name = "CHANNEL")
 public class Channel {
     @Id
     @Column(name = "id")
@@ -19,10 +19,10 @@ public class Channel {
     private String url;
     @Column(nullable = false)
     private String title;
-    @Column(nullable = false)
-    private String filter;
     @Column(nullable = false, unique = true)
     private UUID uuid;
+    @Version
+    private int version;
 
     @ManyToOne
     @JoinColumn(name = "user_id", nullable = false)
@@ -33,10 +33,9 @@ public class Channel {
     public Channel() {
     }
 
-    public Channel(String url, String title, String filter, User user) {
+    public Channel(String url, String title, User user) {
         this.url = url;
         this.title = title;
-        this.filter = filter;
         this.user = user;
         this.uuid = UUID.randomUUID();
     }

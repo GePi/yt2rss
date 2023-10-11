@@ -3,7 +3,6 @@ package farm.giggle.yt2rss.serv;
 import farm.giggle.yt2rss.api.RssTimeIntervalEnum;
 import farm.giggle.yt2rss.exceptions.JaxbMarshallerException;
 import farm.giggle.yt2rss.exceptions.ResourceNotFoundException;
-import farm.giggle.yt2rss.exceptions.UserNotFoundException;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
@@ -16,9 +15,12 @@ import jakarta.xml.bind.Marshaller;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
+import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.io.StringWriter;
+import java.time.OffsetDateTime;
+import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -26,20 +28,22 @@ import java.util.stream.Collectors;
 
 @Service
 public class RssProducerServ {
-    private final ChannelServiceImpl channelService;
-    private final UserServiceImpl userService;
+    private final ChannelService channelService;
+    private final UserService userService;
 
-    public RssProducerServ(ChannelServiceImpl channelService, UserServiceImpl userService) {
+    public RssProducerServ(ChannelService channelService, UserService userService) {
         this.channelService = channelService;
         this.userService = userService;
     }
 
-    public String getUserRss(UUID userUUID, RssTimeIntervalEnum timeInterval) throws UserNotFoundException, JaxbMarshallerException {
+    @Transactional
+    public String getUserRss(UUID userUUID, RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException {
         User user = userService.getUserByUUID(userUUID);
         RssFeed rssFeed = createRssFeed(user, (timeInterval == null) ? RssTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
         return marshal(rssFeed);
     }
 
+    @Transactional
     public String getChannelRss(UUID channelUUID, RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException, ResourceNotFoundException {
         Channel channel = channelService.getChannel(channelUUID);
         if (channel == null) {
@@ -80,7 +84,7 @@ public class RssProducerServ {
         List<File> files = new ArrayList<>();
         List<Channel> channels = channelService.getChannelList(user.getId());
         for (var channel : channels) {
-            files.addAll(channelService.getFileListDownloadedAfter(timeInterval.getDateFrom()));
+            files.addAll(channelService.getFileListDownloadedAfter(channel, timeInterval.getDateFrom()));
         }
         return addFilesIntoRssFeed(files, rssFeed);
     }
@@ -101,13 +105,11 @@ public class RssProducerServ {
     }
 
     private RssEntry mapFileToRssEntry(File file) {
-        RssEntry rssEntry = new RssEntry();
-        rssEntry.setTitle(file.getTitle());
-        rssEntry.setPublished(file.getPublishedAt());
-        rssEntry.setUpdated(file.getDowloadedAt());
-        RssLink rssLink = new RssLink();
-        rssLink.setHref(file.getDownloadedFileUrl1());
-        rssEntry.setLink(rssLink);
-        return rssEntry;
+        return new RssEntry(
+                file.getTitle(),
+                file.getVideoId(),
+                new RssLink("", "", file.getDownloadedFileUrl()),
+                OffsetDateTime.of(file.getPublishedAt(), ZoneOffset.UTC),
+                OffsetDateTime.of(file.getDowloadedAt(), ZoneOffset.UTC));
     }
 }

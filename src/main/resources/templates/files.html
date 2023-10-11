@@ -6,6 +6,13 @@
 </head>
 <body>
 <h1>Список файлов для канала <span th:text="${channel.title}"></span></h1>
+<div>
+    <span>Страницы:</span>
+    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+        <a th:href='@{/channels/files(page=${pageNumber}, channelId=${channel.id})}+${sessionParamsString}'
+           th:text="${pageNumber}">1</a>
+    </span>
+</div>
 <table>
     <thead>
     <tr>
@@ -18,13 +25,13 @@
     <tr th:each="file : ${files}">
         <td><a th:href="${file.getOriginalUrl}" th:text="${file.title}">Ссылка на файл</a></td>
         <td th:text="${file.publishedAt}"></td>
-        <th><a th:href="${file.downloadedFileUrl1}" th:text="${file.downloadedFileUrl1}">Ссылка на скаченный файл</a>
+        <th><a th:href="${file.downloadedFileUrl}" th:text="${file.downloadedFileUrl}">Ссылка на скаченный файл</a>
         </th>
     </tr>
     </tbody>
 </table>
 <div>
-    <a th:href="@{/channels}">К списку каналов</a>
+    <a th:href='@{/channels(ch=0)}+${sessionParamsString}'>К списку каналов</a>
 </div>
 </body>
 </html>

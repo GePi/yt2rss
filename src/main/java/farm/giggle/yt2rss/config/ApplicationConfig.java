@@ -14,9 +14,10 @@ public class ApplicationConfig {
         private SortOrder sortOrder;
     }
 
-    public static enum SortOrder {
+    public enum SortOrder {
         TITLE
     }
 
     private ListOnPage channelPage;
+    private int downloadablePortion = 10;
 }

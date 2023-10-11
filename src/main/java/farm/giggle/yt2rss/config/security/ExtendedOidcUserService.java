@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.serv;
+package farm.giggle.yt2rss.config.security;
 
 import farm.giggle.yt2rss.model.Auth2ProviderEnum;
 import farm.giggle.yt2rss.model.User;
@@ -25,7 +25,7 @@ public class ExtendedOidcUserService extends OidcUserService {
 
     private OidcUser dbProcess(OidcUser oidcUser, OidcUserRequest userRequest) {
         String userId = oidcUser.getName();
-        User user = userRepo.findUserByAuth2ProviderAndAndAuth2Id(Auth2ProviderEnum.GOOGLE, userId);
+        User user = userRepo.findUserByAuth2ProviderAndAuth2Id(Auth2ProviderEnum.GOOGLE, userId);
         if (user == null) {
             user = new User(userId, Auth2ProviderEnum.GOOGLE, userId, UUID.randomUUID());
             userRepo.save(user);

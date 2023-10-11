@@ -1,12 +1,10 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:5433/y2rssdb
-    driver-class-name: org.postgresql.Driver
     username: y2rss
     password: 111111
   jpa:
-    database: postgresql
-    defer-datasource-initialization: true
+    defer-datasource-initialization: false
     hibernate:
-      ddl-auto: create
-    database-platform: org.hibernate.dialect.PostgreSQLDialect
+      ddl-auto: validate
+  liquibase:
+    enabled: true

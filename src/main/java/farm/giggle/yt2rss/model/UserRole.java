@@ -29,6 +29,9 @@ public class UserRole {
     @MapsId("roleId")
     private Role role;
 
+    @Version
+    private int version;
+
     public UserRole() {
     }
 

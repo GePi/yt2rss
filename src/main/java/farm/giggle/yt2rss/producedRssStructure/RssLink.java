@@ -4,11 +4,7 @@ import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlAttribute;
 import jakarta.xml.bind.annotation.XmlRootElement;
-import lombok.Data;
-import lombok.NoArgsConstructor;
 
-@Data
-@NoArgsConstructor
 @XmlRootElement(name = "link")
 @XmlAccessorType(XmlAccessType.FIELD)
 public class RssLink {
@@ -18,4 +14,13 @@ public class RssLink {
     private String type;
     @XmlAttribute
     private String href;
+
+    public RssLink() {
+    }
+
+    public RssLink(String rel, String type, String href) {
+        this.rel = rel;
+        this.type = type;
+        this.href = href;
+    }
 }

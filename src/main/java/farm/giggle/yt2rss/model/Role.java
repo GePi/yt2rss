@@ -1,10 +1,10 @@
 package farm.giggle.yt2rss.model;
 
 import jakarta.persistence.*;
-import lombok.Data;
+import lombok.Getter;
 import lombok.NoArgsConstructor;
 
-@Data
+@Getter
 @NoArgsConstructor
 @Entity
 @Table(name = "roles")
@@ -16,12 +16,14 @@ public class Role {
     @Enumerated(EnumType.STRING)
     private RoleEnum roleName;
 
-    static public Role from(RoleEnum roleKey) {
-        Role role = new Role();
-        role.setRoleName(roleKey);
-        return role;
+    @Version
+    private int version;
+
+    public Role(RoleEnum roleName) {
+        this.roleName = roleName;
     }
 
+    @Getter
     public enum RoleEnum {
         ADMIN("Admin"), USER("User");
 
@@ -33,8 +35,5 @@ public class Role {
             this.description = description;
         }
 
-        public String getDescription() {
-            return description;
-        }
     }
 }
