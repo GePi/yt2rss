@@ -8,8 +8,6 @@ import org.springframework.web.bind.annotation.PutMapping;
 import org.springframework.web.bind.annotation.RequestBody;
 import org.springframework.web.bind.annotation.RestController;
 
-import java.time.LocalDateTime;
-import java.time.ZoneOffset;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -25,7 +23,7 @@ public class ExternalDownloaderController {
     public ExchangeFileFormat[] getFilesForDownload() {
         List<ExchangeFileFormat> exchangeFileFormats = new ArrayList<>();
         for (var file : channelService.getNotDownloadedFileList()) {
-            exchangeFileFormats.add(new ExchangeFileFormat(file.getId(), file.getOriginalUrl()));
+            exchangeFileFormats.add(new ExchangeFileFormat(file.getId(), file.getOriginalUrl(), null, null));
         }
         return exchangeFileFormats.toArray(ExchangeFileFormat[]::new);
     }
@@ -33,13 +31,11 @@ public class ExternalDownloaderController {
     @PutMapping("/downloaded")
     @Transactional
     public void setDownloadedUrl(@RequestBody ExchangeFileFormat[] exchangeFileFormats) {
-        //TODO можно ли как то массово внести
-        LocalDateTime now = LocalDateTime.now(ZoneOffset.UTC);
         for (var downloadedFile : exchangeFileFormats) {
             File file = channelService.getFile(downloadedFile.getId());
             if (file != null) {
                 file.setDownloadedFileUrl(downloadedFile.getDownloadedUrl());
-                file.setDowloadedAt(now);
+                file.setDowloadedAt(downloadedFile.getDownloadedAt());
             }
         }
     }
