@@ -12,8 +12,6 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.security.web.SecurityFilterChain;
 import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 
-import static org.springframework.boot.autoconfigure.security.servlet.PathRequest.toH2Console;
-
 @Configuration
 @EnableWebSecurity
 public class SecurityConfig {
@@ -27,7 +25,7 @@ public class SecurityConfig {
     @Bean
     public SecurityFilterChain filterChain(HttpSecurity http) throws Exception {
         http
-                .csrf().ignoringRequestMatchers(toH2Console(), new AntPathRequestMatcher("/api/**"))
+                .csrf().ignoringRequestMatchers(new AntPathRequestMatcher("/api/**"))
                 .and()
                 .headers().frameOptions().disable()
                 .and()
@@ -37,7 +35,6 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/rss/**").permitAll()
-                        .requestMatchers(toH2Console()).permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login();
         return http.build();
