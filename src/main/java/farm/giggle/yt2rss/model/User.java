@@ -1,5 +1,6 @@
 package farm.giggle.yt2rss.model;
 
+import farm.giggle.yt2rss.config.security.Auth2ProviderEnum;
 import jakarta.persistence.*;
 import lombok.Getter;
 import lombok.Setter;

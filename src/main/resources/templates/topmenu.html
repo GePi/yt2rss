@@ -1,0 +1,25 @@
+<div class="navbar" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
+    <div class="project-title">
+        <img src="/images/logo.png" alt="Project Logo" width="40" height="40">
+        Youtube2AudioRSS transmutator
+    </div>
+
+    <div sec:authorize="isAnonymous()">
+        Войти через
+        <a href="/oauth2/authorization/github">GitHub</a>
+        <span>/</span>
+        <a href="/oauth2/authorization/google">Google</a>
+    </div>
+
+    <div class="to_auth" sec:authorize="hasRole('USER_MANAGEMENT')">
+        <a href="/users">Управление пользователями</a>
+    </div>
+
+    <div class="user-info" sec:authorize="isAuthenticated()">
+        Вы вошли как:
+        <span sec:authentication="principal.user.name">user</span>
+        <form th:action="@{/logout}" method="post">
+            <button type="submit">(выйти)</button>
+        </form>
+    </div>
+</div>

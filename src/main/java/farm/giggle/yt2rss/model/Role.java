@@ -25,15 +25,14 @@ public class Role {
 
     @Getter
     public enum RoleEnum {
-        ADMIN("Admin"), USER("User");
+        USER_MANAGEMENT("USER_MANAGEMENT"), ORDINARY_USER("ORDINARY_USER");
 
         public static final int MAX_LEN_ROLE_NAME = 32;
 
-        private final String description;
+        private final String roleName;
 
-        RoleEnum(String description) {
-            this.description = description;
+        RoleEnum(String roleName) {
+            this.roleName = roleName;
         }
-
     }
 }

@@ -1,15 +1,11 @@
 package farm.giggle.yt2rss.config.security;
 
-import farm.giggle.yt2rss.model.Auth2ProviderEnum;
-import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.model.repo.UserRepo;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.user.OAuth2User;
-
-import java.util.UUID;
 
 public class ExtendedOAuth2UserService implements OAuth2UserService<OAuth2UserRequest, OAuth2User> {
     private final UserRepo userRepo;
@@ -26,12 +22,7 @@ public class ExtendedOAuth2UserService implements OAuth2UserService<OAuth2UserRe
     }
 
     private ExtendedOAuth2User dbProcess(OAuth2User oAuth2User, OAuth2UserRequest userRequest) {
-        String userId = oAuth2User.getName();
-        User user = userRepo.findUserByAuth2ProviderAndAuth2Id(Auth2ProviderEnum.GITHUB, userId);
-        if (user == null) {
-            user = new User(userId, Auth2ProviderEnum.GITHUB, userId, UUID.randomUUID());
-            userRepo.save(user);
-        }
-        return new ExtendedOAuth2User(userRequest, oAuth2User, user);
+        UserFactory userFactory = UserFactory.create(userRequest, oAuth2User, userRepo);
+        return (ExtendedOAuth2User) userFactory.createAuth2User();
     }
 }

@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.model;
+package farm.giggle.yt2rss.config.security;
 
 public enum Auth2ProviderEnum {
     GOOGLE, GITHUB;

@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Добавление канала</title>
+    <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
 <h1>Добавление канала</h1>
@@ -12,7 +13,6 @@
     <th:block th:each="sessionParam : ${sessionParams}">
         <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}" />
     </th:block>
-    <br>
     <button type="submit">Добавить</button>
 </form>
 </body>

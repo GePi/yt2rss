@@ -3,6 +3,7 @@
 <head>
     <meta charset="UTF-8">
     <title>Список каналов</title>
+    <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
 <h1>Список каналов</h1>
@@ -12,8 +13,6 @@
     <a th:href='@{/channels(page=${pageNumber})}+${sessionParamsString}'
        th:text="${pageNumber}">1</a>
     </span>
-
-
 </div>
 <table>
     <thead>
@@ -36,7 +35,7 @@
                 <th:block th:each="sessionParam : ${sessionParams}">
                     <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}"/>
                 </th:block>
-                <button type="submit" value="Удалить"><img src="trash.png" width="15px" alt="Удалить"></button>
+                <button type="submit" value="Удалить"><img src="/images/trash.png" width="15px" alt="Удалить"></button>
             </form>
         </td>
         <td>
@@ -46,7 +45,6 @@
     </tr>
     </tbody>
 </table>
-
 
 <div>
     <a th:href='@{/channels/add-channel(ch=0)}+${sessionParamsString}'>Добавить канал</a>

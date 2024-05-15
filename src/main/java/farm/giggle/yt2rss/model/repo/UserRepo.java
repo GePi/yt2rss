@@ -1,6 +1,6 @@
 package farm.giggle.yt2rss.model.repo;
 
-import farm.giggle.yt2rss.model.Auth2ProviderEnum;
+import farm.giggle.yt2rss.config.security.Auth2ProviderEnum;
 import farm.giggle.yt2rss.model.Role;
 import farm.giggle.yt2rss.model.User;
 import org.springframework.data.domain.Page;

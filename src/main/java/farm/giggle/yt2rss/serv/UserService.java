@@ -1,5 +1,6 @@
 package farm.giggle.yt2rss.serv;
 
+import farm.giggle.yt2rss.config.security.Auth2ProviderEnum;
 import farm.giggle.yt2rss.exceptions.UserNotFoundException;
 import farm.giggle.yt2rss.model.Role;
 import farm.giggle.yt2rss.model.User;
@@ -32,7 +33,7 @@ public class UserService {
     public void becomeAdmin(Long userId) throws UserNotFoundException {
         User user = userRepo.getUserById(userId).orElseThrow(() -> new UserNotFoundException(userId));
         if (!hasAdminRole(user)) {
-            user.addRole(userRepo.getRoleByName(Role.RoleEnum.ADMIN));
+            user.addRole(userRepo.getRoleByName(Role.RoleEnum.USER_MANAGEMENT));
         }
     }
 
@@ -42,11 +43,18 @@ public class UserService {
 
     public boolean hasAdminRole(User user) {
         for (UserRole userRole : user.getUserRoles()) {
-            if (userRole.getRole().getRoleName().equals(Role.RoleEnum.ADMIN)) {
+            if (userRole.getRole().getRoleName().equals(Role.RoleEnum.USER_MANAGEMENT)) {
                 return true;
             }
         }
         return false;
+    }
+
+    public User createOrdinaryUser(String name, Auth2ProviderEnum auth2Provider, String auth2Id, UUID uuid) {
+        Role ordinaryUser = userRepo.getRoleByName(Role.RoleEnum.ORDINARY_USER);
+        User user = new User(name, auth2Provider, auth2Id, uuid);
+        user.addRole(ordinaryUser);
+        return user;
     }
 }
 

@@ -3,39 +3,17 @@
 <head>
     <meta charset="UTF-8">
     <title>Пример страницы WELCOME</title>
+    <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
-<header>
-    <p>Краткое описание проекта</p>
-</header>
+<div th:replace="~{topmenu}"></div>
 <main>
-    <div class="to_auth">
-        <span>Login as </span>
-    </div>
-
     <div class="to_auth">
         All user files: <a th:href="@{/rss/user/{user_uuid}(user_uuid=${user_uuid})}">all user files feed</a>
     </div>
 
     <div class="to_auth">
         To channels: <a href="/channels">click here</a>
-    </div>
-    <div class="to_auth">
-        To users: <a href="/users">click here</a>
-    </div>
-    <div class="unauthenticated">
-        With GitHub: <a href="/oauth2/authorization/github">click here</a>
-    </div>
-    <div>
-        With Google: <a href="/oauth2/authorization/google">click here</a>
-    </div>
-    <div class="authenticated">
-        Logged in as: <span id="user"></span>
-        <div>
-            <form method="POST" th:action="@{/logout}">
-                <input type="submit" value="Logout"/>
-            </form>
-        </div>
     </div>
 </main>
 </body>

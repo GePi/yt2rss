@@ -35,6 +35,8 @@ public class SecurityConfig {
                         .requestMatchers("/").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/rss/**").permitAll()
+                        .requestMatchers("/styles/**").permitAll()
+                        .requestMatchers("/images/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login();
         return http.build();
