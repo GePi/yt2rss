@@ -2,7 +2,7 @@ package farm.giggle.yt2rss.config.security;
 
 import farm.giggle.yt2rss.exceptions.Auth2ProviderNotSupportedException;
 import farm.giggle.yt2rss.model.User;
-import farm.giggle.yt2rss.model.repo.UserRepo;
+import farm.giggle.yt2rss.serv.UserService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -11,8 +11,8 @@ public class UserFactoryOidc extends UserFactory {
     private final OidcUserRequest userRequest;
     private final OidcUser oidcUser;
 
-    public UserFactoryOidc(OidcUserRequest userRequest, OidcUser oidcUser, UserRepo userRepo) {
-        super(userRepo);
+    public UserFactoryOidc(OidcUserRequest userRequest, OidcUser oidcUser, UserService userService) {
+        super(userService);
         this.oidcUser = oidcUser;
         this.userRequest = userRequest;
 

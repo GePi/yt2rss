@@ -26,6 +26,10 @@ public class UserService {
         return userRepo.findById(userId).orElseThrow(() -> new RuntimeException(new UserNotFoundException(userId)));
     }
 
+    public User findUserByOAuth2Id(Auth2ProviderEnum auth2ProviderEnum, String auth2Id) {
+        return userRepo.findUserByAuth2ProviderAndAuth2Id(auth2ProviderEnum, auth2Id);
+    }
+
     public Page<User> getUserPage(Integer pageNum, Integer entriesOnPage) {
         return userRepo.findAll(PageRequest.of(pageNum, entriesOnPage));
     }
@@ -54,7 +58,7 @@ public class UserService {
         Role ordinaryUser = userRepo.getRoleByName(Role.RoleEnum.ORDINARY_USER);
         User user = new User(name, auth2Provider, auth2Id, uuid);
         user.addRole(ordinaryUser);
-        return user;
+        return userRepo.save(user);
     }
 }
 

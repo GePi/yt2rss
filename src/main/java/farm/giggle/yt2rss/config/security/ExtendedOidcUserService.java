@@ -1,16 +1,16 @@
 package farm.giggle.yt2rss.config.security;
 
-import farm.giggle.yt2rss.model.repo.UserRepo;
+import farm.giggle.yt2rss.serv.UserService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;
 import org.springframework.security.oauth2.core.oidc.user.OidcUser;
 
 public class ExtendedOidcUserService extends OidcUserService {
-    private final UserRepo userRepo;
+    private final UserService userService;
 
-    public ExtendedOidcUserService(UserRepo userRepo) {
-        this.userRepo = userRepo;
+    public ExtendedOidcUserService(UserService userService) {
+        this.userService = userService ;
     }
 
     @Override
@@ -20,7 +20,7 @@ public class ExtendedOidcUserService extends OidcUserService {
     }
 
     private OidcUser dbProcess(OidcUser oidcUser, OidcUserRequest userRequest) {
-        UserFactory userFactory = UserFactory.create(userRequest, oidcUser, userRepo);
+        UserFactory userFactory = UserFactory.create(userRequest, oidcUser, userService);
         return (OidcUser) userFactory.createAuth2User();
     }
 }

@@ -1,6 +1,7 @@
 package farm.giggle.yt2rss.config.security;
 
 import farm.giggle.yt2rss.model.repo.UserRepo;
+import farm.giggle.yt2rss.serv.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -16,10 +17,10 @@ import org.springframework.security.web.util.matcher.AntPathRequestMatcher;
 @EnableWebSecurity
 public class SecurityConfig {
 
-    private final UserRepo userRepo;
+    private final UserService userService;
 
-    public SecurityConfig(UserRepo userRepo) {
-        this.userRepo = userRepo;
+    public SecurityConfig(UserService userService) {
+        this.userService = userService;
     }
 
     @Bean
@@ -44,11 +45,11 @@ public class SecurityConfig {
 
     @Bean
     public OAuth2UserService<OAuth2UserRequest, OAuth2User> getOAuth2UserService() {
-        return new ExtendedOAuth2UserService(userRepo);
+        return new ExtendedOAuth2UserService(userService);
     }
 
     @Bean
     public OidcUserService getOidcUserService() {
-        return new ExtendedOidcUserService(userRepo);
+        return new ExtendedOidcUserService(userService);
     }
 }
