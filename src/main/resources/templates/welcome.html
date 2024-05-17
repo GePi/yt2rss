@@ -1,20 +1,56 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
 <head>
     <meta charset="UTF-8">
-    <title>Пример страницы WELCOME</title>
+    <title>Y2RSS - слушаем YouTube в аудио</title>
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
-<div th:replace="~{topmenu}"></div>
-<main>
-    <div class="to_auth">
-        All user files: <a th:href="@{/rss/user/{user_uuid}(user_uuid=${user_uuid})}">all user files feed</a>
-    </div>
 
-    <div class="to_auth">
-        To channels: <a href="/channels">click here</a>
+<div class="hidden">
+    <div class="nav-links" th:fragment="custom-links-content">
+        <a th:href="@{/channels}">Список каналов</a>
+        <span>|</span>
+        <a th:href='@{/channels/add-channel(ch=0)}+${sessionParamsString}'>Добавить канал</a>
+        <span sec:authorize="isAuthenticated()">|</span>
+        <a sec:authorize="isAuthenticated()" th:href="@{/rss/user/{user_uuid}(user_uuid=${user_uuid})}">RSS feed "все
+            файлы"</a>
+    </div>
+</div>
+<div th:replace="~{topmenu}"></div>
+
+<main>
+    <div class="main-part">
+        <div class="header-block">
+            <div class="header-title">Добро пожаловать, на этом сайте вы можете:</div>
+        </div>
+        <div class="paragraph">
+            Сначала авторизоваться используя Github или Google.
+        </div>
+        <div class="paragraph">
+            Затем добавить все каналы youtube которые вы ходите СЛУШАТЬ в свой <a href="/channels">список каналов</a>.
+            Для этого просто добавляйте URL со ссылкой на канал на
+            <a th:href='@{/channels/add-channel(ch=0)}+${sessionParamsString}'>соответствующей странице</a>.
+        </div>
+        <div class="paragraph">
+            Для каждого из добавленных вами каналов будет создан RSS поток со ссылками на эпизоды канала в аудио-формате.
+            Этот список будет обновляться в соответствии с обновлениями основного канала.
+            Сайт сам будет скачивать видео эпизоды и преобразовывать файлы в аудио формат.
+            Вам лишь необходимо подписаться на соответствующий RSS для канала и слушать в своё удовольствие.
+        </div>
+        <div class="paragraph">
+            Ссылку на RSS канал для подписки можно взять в поле RSS feed на странице
+            <a href="/channels">список каналов</a>
+            для каждого канала.
+            Кроме этого, если вы ходите получить RSS поток со всеми эпизодами всех ваших каналов, просто подпишитесь на
+            специальный RSS
+            <a sec:authorize="isAuthenticated()" th:href="@{/rss/user/{user_uuid}(user_uuid=${user_uuid})}">RSS feed
+                "все файлы"</a>
+            и получайте все свои файлы в одном потоке.
+        </div>
     </div>
 </main>
+
+<div th:replace="~{footer}"></div>
 </body>
 </html>

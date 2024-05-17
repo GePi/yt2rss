@@ -6,44 +6,64 @@
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
-<h1>Список пользователей</h1>
-<div>
-    <span>Страницы:</span>
-    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
-        <a th:href="@{/users(page=${pageNumber})}" th:text="${pageNumber}">1</a>
-    </span>
+
+<div class="hidden">
+    <div class="nav-links" th:fragment="custom-links-content">
+        <a th:href="@{/}">На главную</a>
+        <span>|</span>
+        <a th:href="@{/channels}">К списку каналов</a>
+    </div>
 </div>
-<table>
-    <thead>
-    <tr>
-        <th>Id пользователя</th>
-        <th>Имя пользователя</th>
-        <th>Id в системе Auth2</th>
-        <th>Система Auth2</th>
-        <th>UUID</th>
-        <th>Удалить пользователя</th>
-        <th>Каналы пользователя</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="user : ${users}">
-        <td th:text="${user.id}"></td>
-        <td th:text="${user.name}"></td>
-        <td th:text="${user.auth2Id}"></td>
-        <td th:text="${user.auth2Provider}"></td>
-        <td th:text="${user.uuid}"></td>
-        <td>
-            <form th:action="@{/users/delete/}" method="post">
-                <input hidden th:value="${user.id}" name="userId">
-                <button type="submit" value="Удалить"><img src="trash.png" width="15px" alt="Удалить"></button>
-            </form>
-        </td>
-        <td><a th:href="@{/channels(userId=${user.id})}">Перейти к каналам</a></td>
-    </tr>
-    </tbody>
-</table>
-<div>
-    <a th:href="@{/}">На главную</a>
-</div>
+
+<div th:replace="~{topmenu}"></div>
+
+<main>
+    <div class="main-part">
+        <div class="header-block">
+            <div class="header-title">Список пользователей
+                <div class="header-pages">
+                    <span>Страницы:</span>
+                    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+                    <a th:href="@{/users(page=${pageNumber})}" th:text="${pageNumber}">1</a>
+                </span>
+                </div>
+            </div>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>Id пользователя</th>
+                <th>Имя пользователя</th>
+                <th>Id в системе Auth2</th>
+                <th>Система Auth2</th>
+                <th>UUID</th>
+                <th>Удалить пользователя</th>
+                <th>Каналы пользователя</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="user : ${users}">
+                <td th:text="${user.id}"></td>
+                <td th:text="${user.name}"></td>
+                <td th:text="${user.auth2Id}"></td>
+                <td th:text="${user.auth2Provider}"></td>
+                <td th:text="${user.uuid}"></td>
+                <td>
+                    <form th:action="@{/users/delete/}" method="post">
+                        <input hidden th:value="${user.id}" name="userId">
+                        <button type="submit" class="btn-action" value="Удалить">
+                            <img src="/images/icon-trash-without-bg.png" width="25px" alt="&#128465;">Удалить
+                        </button>
+                    </form>
+                </td>
+                <td><a th:href="@{/channels(userId=${user.id})}">Перейти к каналам</a></td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{footer}"></div>
+
 </body>
 </html>

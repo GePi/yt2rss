@@ -6,51 +6,69 @@
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
-<h1>Список каналов</h1>
-<div>
-    <span>Страницы:</span>
-    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
-    <a th:href='@{/channels(page=${pageNumber})}+${sessionParamsString}'
-       th:text="${pageNumber}">1</a>
-    </span>
-</div>
-<table>
-    <thead>
-    <tr>
-        <th>URL</th>
-        <th>Название</th>
-        <th>Список файлов</th>
-        <th>Действия</th>
-        <th>Feed</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="channel : ${channels}">
-        <td><a th:href="${channel.url}" th:text="${channel.url}">Ссылка на канал</a></td>
-        <td th:text="${channel.title}"></td>
-        <td><a th:href='@{/channels/files(channelId=${channel.id})}+${sessionParams.getParamString()}'>Файлы >></a></td>
-        <td>
-            <form th:action="@{/channels/del-channel}" method="post">
-                <input hidden th:value="${channel.id}" name="channelId">
-                <th:block th:each="sessionParam : ${sessionParams}">
-                    <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}"/>
-                </th:block>
-                <button type="submit" value="Удалить"><img src="/images/trash.png" width="15px" alt="Удалить"></button>
-            </form>
-        </td>
-        <td>
-            <a th:href="@{/rss/channel/{channel_uuid}/LAST_DAY(channel_uuid=${channel.uuid})}">За день</a>
-            <a th:href="@{/rss/channel/{channel_uuid}(channel_uuid=${channel.uuid})}">Полный</a>
-        </td>
-    </tr>
-    </tbody>
-</table>
 
-<div>
-    <a th:href='@{/channels/add-channel(ch=0)}+${sessionParamsString}'>Добавить канал</a>
+<div class="hidden">
+    <div class="nav-links" th:fragment="custom-links-content">
+        <a th:href="@{/}">На главную</a>
+        <span>|</span>
+        <a href="/channels/add-channel">Добавить канал</a>
+    </div>
 </div>
-<div>
-    <a th:href="@{/}">На главную</a>
-</div>
+
+<div th:replace="~{topmenu}"></div>
+
+<main>
+    <div class="main-part">
+        <div class="header-block">
+            <div class="header-title">Список каналов
+                <div class="header-pages">
+                    <span>Страницы:</span>
+                    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+                        <a th:href='@{/channels(page=${pageNumber})}+${sessionParamsString}'
+                           th:text="${pageNumber}">1</a>
+                    </span>
+                </div>
+            </div>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>URL</th>
+                <th>Название</th>
+                <th>Список файлов</th>
+                <th>Действия</th>
+                <th>RSS feed</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="channel : ${channels}">
+                <td><a th:href="${channel.url}" th:text="${channel.url}">Ссылка на канал</a></td>
+                <td th:text="${channel.title}"></td>
+                <td><a th:href='@{/channels/files(channelId=${channel.id})}+${sessionParams.getParamString()}'>Файлы
+                    >></a>
+                </td>
+                <td>
+                    <form th:action="@{/channels/del-channel}" method="post">
+                        <input hidden th:value="${channel.id}" name="channelId">
+                        <th:block th:each="sessionParam : ${sessionParams}">
+                            <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}"/>
+                        </th:block>
+                        <button type="submit" class="btn-action">
+                            <img src="/images/icon-trash-without-bg.png" width="25px" alt="&#128465;"/>Удалить
+                        </button>
+                    </form>
+                </td>
+                <td>
+                    <a th:href="@{/rss/channel/{channel_uuid}/LAST_DAY(channel_uuid=${channel.uuid})}">За день</a>
+                    <a th:href="@{/rss/channel/{channel_uuid}(channel_uuid=${channel.uuid})}">Полный</a>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+
+<div th:replace="~{footer}"></div>
+
 </body>
 </html>

@@ -6,10 +6,7 @@ body {
 
 h1, div, table, header, main, p {
     background-color: #fff;
-    padding: 20px;
-    margin: 10px;
-    border-radius: 8px;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 4px;
 }
 
 table {
@@ -17,14 +14,21 @@ table {
     border-collapse: collapse;
 }
 
-th, td {
+td {
     padding: 8px;
     text-align: left;
+    font-style: normal;
+    font-size: 14px;
+    font-weight: normal;
     border-bottom: 1px solid #ddd;
 }
 
 th {
-    background-color: #f0f0f0;
+    padding: 8px;
+    text-align: left;
+    font-style: normal;
+    font-size: 16px;
+    border-bottom: 1px solid #ddd;
 }
 
 a {
@@ -37,17 +41,15 @@ a:hover {
 }
 
 button, input[type="submit"] {
-    background-color: #0084ff;
-    color: white;
-    border: none;
-    border-radius: 4px;
-    padding: 8px;
-    cursor: pointer;
     width: 100%;
+    background-color: white;
+    border: none;
 }
 
 button:hover, input[type="submit"]:hover {
-    background-color: #0056b3;
+    width: 100%;
+    background-color: #0066cc;
+    border: none;
 }
 
 form {
@@ -64,36 +66,28 @@ form {
     height: 20px;
 }
 
-
-button.delete, button[type="submit"] {
-    background-color: #ff6347;
+.hidden {
+    display: none;
 }
 
-button.delete:hover {
-    background-color: #e0533d;
-}
-
-label, input, button {
-    display: block;
-    margin: 10px 0;
-}
-
-.to_auth {
-    margin-bottom: 10px;
-}
-
-/* Стили для верхнего меню */
 .navbar {
-    background-color: #f0f0f0;
-    box-shadow: 0 2px 5px rgba(0, 0, 0, 0.1);
+    background-color: white;
     padding: 10px 20px;
+    border-bottom: 1px solid #ccc;
     display: flex;
     justify-content: space-between;
+    align-items: center;
+    margin-bottom: 15px;
+}
+
+.navbar .together {
+    display: flex;
+    justify-content: flex-start;
     align-items: center;
 }
 
 .navbar .project-title {
-    font-size: 24px;
+    font-size: 18px;
     color: #333;
     display: flex;
     align-items: center;
@@ -101,20 +95,17 @@ label, input, button {
 
 .navbar .project-title img {
     margin-right: 10px;
+    align-items: center;
 }
 
-.navbar .auth-links,
+.navbar .nav-links {
+    margin-left: 2em;
+}
+
 .navbar .user-info {
     display: flex;
     align-items: center;
     white-space: nowrap;
-}
-
-.user-info > span {
-    margin-right: 5px;
-}
-
-.user-info form {
     margin: 0;
 }
 
@@ -126,3 +117,137 @@ label, input, button {
     padding: 0 1px;
     margin: 0;
 }
+
+.footer {
+    font-size: 14px;
+    border-top: 1px solid #ccc;
+    border-bottom: none;
+    margin-top: 15px;
+}
+
+.footer a {
+    color: #0066cc; /* Цвет ссылок */
+    text-decoration: none; /* Убрать подчеркивание у ссылок */
+}
+
+.footer a:hover {
+    text-decoration: underline; /* Подчеркивание при наведении для ссылок */
+}
+
+.main-part {
+    padding: 1em;
+    background-color: white;
+}
+
+.main-part .header-block {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    margin-bottom: 1em;
+}
+
+.header-block .header-title {
+    font-size: 16px;
+    font-weight: bold;
+    color: #333;
+}
+
+.header-block .header-pages {
+    font-size: 14px;
+    font-weight: normal;
+    color: #444444;
+}
+.main-part .paragraph {
+    padding-top: 1em;
+}
+
+.form-container {
+    width: 80%;
+    max-width: 600px;
+    min-width: 300px;
+    margin: 0 auto; /* Центрируем форму */
+    padding: 20px;
+    border: 1px solid #ccc;
+    border-radius: 8px;
+    background-color: #f9f9f9;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+}
+
+.form-container p {
+    margin: 0 0 10px;
+}
+
+.form-container .note {
+    font-size: 0.7em;
+    color: #666;
+}
+
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
+}
+
+input[type="text"] {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.form-buttons {
+    display: flex;
+    justify-content: center; /* Центрируем кнопки */
+    gap: 10px; /* Отступ между кнопками */
+}
+
+.btn {
+    display: flex;
+    align-items: center;
+    padding: 10px 20px;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 16px;
+    justify-content: center;
+}
+
+.btn img {
+    padding-right: 0.5em;
+}
+
+.btn:hover {
+    background-color: #0056b3;
+}
+
+.btn-action {
+    display: flex;
+    align-items: center;
+    background-color: #007bff;
+    color: white;
+    border: none;
+    border-radius: 4px;
+    cursor: pointer;
+    text-decoration: none;
+    font-size: 14px;
+    justify-content: center;
+    width: 120px;
+}
+
+.btn-action img {
+    padding-right: 0.5em;
+}
+.btn-action:hover {
+    background-color: #0056b3;
+    width: 120px;
+}
+
+
+
+
+

@@ -6,5 +6,9 @@ Your program should avoid parsing the normal stdout since they may change in fut
 Instead they should use options such as -J, --print, --progress-template, --exec etc to create
 console output that you can reliably reproduce and parse.
 
+Сельский программист
+https://www.youtube.com/channel/UCS7Ph8LwlIND9_32pNMv7ZQ
 
+Сельский джавист
+https://www.youtube.com/channel/UCmJc7tVBDG6R8x21sudricA
 

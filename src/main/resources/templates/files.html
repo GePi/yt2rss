@@ -6,32 +6,55 @@
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
-<h1>Список файлов для канала <span th:text="${channel.title}"></span></h1>
-<div>
-    <span>Страницы:</span>
-    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
-        <a th:href='@{/channels/files(page=${pageNumber}, channelId=${channel.id})}+${sessionParamsString}'
-           th:text="${pageNumber}">1</a>
-    </span>
+
+<div class="hidden">
+    <div class="nav-links" th:fragment="custom-links-content">
+        <a th:href="@{/}">На главную</a>
+        <span>|</span>
+        <a th:href="@{/channels}">К списку каналов</a>
+    </div>
 </div>
-<table>
-    <thead>
-    <tr>
-        <th>URL оригинала</th>
-        <th>Время обновления файла</th>
-        <th>Скаченный файл</th>
-    </tr>
-    </thead>
-    <tbody>
-    <tr th:each="file : ${files}">
-        <td><a th:href="${file.getOriginalUrl}" th:text="${file.title}">Ссылка на файл</a></td>
-        <td th:text="${file.publishedAt}"></td>
-        <th><a th:href="${file.downloadedFileUrl}" th:text="${file.downloadedFileUrl}">Ссылка на скаченный файл</a></th>
-    </tr>
-    </tbody>
-</table>
-<div>
-    <a th:href='@{/channels(ch=0)}+${sessionParamsString}'>К списку каналов</a>
-</div>
+<div th:replace="~{topmenu}"></div>
+
+<main>
+    <div class="main-part">
+        <div class="header-block">
+            <div class="header-title">Список файлов канала &laquo; <span th:text="${channel.title}"></span> &raquo;
+                <div class="header-pages">
+                    <span>Страницы:</span>
+                    <span th:each="pageNumber : ${#numbers.sequence(1, totalPages)}">
+                    <a th:href='@{/channels/files(page=${pageNumber}, channelId=${channel.id})}+${sessionParamsString}'
+                       th:text="${pageNumber}">1</a>
+                </span>
+                </div>
+            </div>
+        </div>
+        <table>
+            <thead>
+            <tr>
+                <th>URL оригинала</th>
+                <th>Время обновления файла</th>
+                <th>Скаченный файл</th>
+            </tr>
+            </thead>
+            <tbody>
+            <tr th:each="file : ${files}">
+                <td><a th:href="${file.getOriginalUrl}" th:text="${file.title}">Ссылка на файл</a></td>
+                <td th:text="${file.publishedAt}"></td>
+                <td>
+                    <a th:if="${file.downloadedFileUrl != null and file.downloadedFileUrl != ''}"
+                       th:href="${file.downloadedFileUrl}" th:text="${file.downloadedFileUrl}">Ссылка на скаченный
+                        файл</a>
+                    <span th:if="${file.downloadedFileUrl == null or file.downloadedFileUrl == ''}">
+                        Файл ещё не готов
+                    </span>
+                </td>
+            </tr>
+            </tbody>
+        </table>
+    </div>
+</main>
+<div th:replace="~{footer}"></div>
+
 </body>
 </html>

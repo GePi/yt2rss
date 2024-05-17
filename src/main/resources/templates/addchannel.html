@@ -6,14 +6,48 @@
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
-<h1>Добавление канала</h1>
-<form method="post" th:action="@{/channels/add-channel}">
-    <label for="url-input">URL канала:</label>
-    <input type="text" id="url-input" name="url" placeholder="Введите URL канала">
-    <th:block th:each="sessionParam : ${sessionParams}">
-        <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}" />
-    </th:block>
-    <button type="submit">Добавить</button>
-</form>
+
+<div class="hidden">
+    <div class="nav-links" th:fragment="custom-links-content">
+        <a th:href="@{/}">На главную</a>
+        <span>|</span>
+        <a href="/channels">К списку каналов</a>
+    </div>
+</div>
+<div th:replace="~{topmenu}"></div>
+
+<main>
+    <div class="main-part">
+        <div class="header-block">
+            <div class="header-title">Добавление канала</div>
+        </div>
+        <div class="form-container">
+            <p>Пожалуйста, введите URL канала, который вы хотите добавить.</p>
+            <p>Убедитесь, что URL правильный и доступен.</p>
+            <p class="note">* Правильно: https://www.youtube.com/user/plushev</p>
+            <p class="note">* Правильно: https://www.youtube.com/channel/UCS7Ph8LwlIND9_32pNMv7ZQ</p>
+            <p class="note">* Правильно: https://www.youtube.com/feeds/videos.xml?channel_id=UCTVk323gzizpujtn2T_BL7w</p>
+
+            <form method="post" th:action="@{/channels/add-channel}">
+                <label for="url-input">URL канала:</label>
+                <input type="text" id="url-input" name="url" placeholder="Введите URL канала">
+                <th:block th:each="sessionParam : ${sessionParams}">
+                    <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}"/>
+                </th:block>
+                <div class="form-buttons">
+                    <button type="submit" class="btn">
+                        <img src="/images/icon-add-without-bg.png" alt="Add" width="25px"> Добавить
+                    </button>
+                    <button type="button" class="btn" onclick="history.back();">
+                        <img src="/images/icon-back-without-bg.png" alt="Back" width="25px"> Отменить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{footer}"></div>
+
 </body>
 </html>

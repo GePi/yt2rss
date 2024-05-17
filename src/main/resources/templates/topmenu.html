@@ -1,18 +1,24 @@
 <div class="navbar" xmlns:th="http://www.thymeleaf.org" xmlns:sec="http://www.thymeleaf.org/extras/spring-security">
-    <div class="project-title">
-        <img src="/images/logo.png" alt="Project Logo" width="40" height="40">
-        Youtube2AudioRSS transmutator
+
+    <div class="together">
+        <div class="project-title">
+            <a href="/"><img src="/images/logo.png" alt="Project Logo" width="40" height="40"></a>
+            Youtube2AudioRSS transmutator
+        </div>
+
+        <div th:replace="~{::custom-links-content}">
+        </div>
+        <div class="nav-links" sec:authorize="hasRole('ROLE_USER_MANAGEMENT')">
+            <span>|</span>
+            <a href="/users">Управление пользователями</a>
+        </div>
     </div>
 
-    <div sec:authorize="isAnonymous()">
-        Войти через
+    <div class="user-info" sec:authorize="isAnonymous()">
+        <span>Войти через:&nbsp;</span>
         <a href="/oauth2/authorization/github">GitHub</a>
-        <span>/</span>
+        <span>|</span>
         <a href="/oauth2/authorization/google">Google</a>
-    </div>
-
-    <div class="to_auth" sec:authorize="hasRole('USER_MANAGEMENT')">
-        <a href="/users">Управление пользователями</a>
     </div>
 
     <div class="user-info" sec:authorize="isAuthenticated()">

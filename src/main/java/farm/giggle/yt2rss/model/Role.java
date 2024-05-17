@@ -25,7 +25,7 @@ public class Role {
 
     @Getter
     public enum RoleEnum {
-        USER_MANAGEMENT("USER_MANAGEMENT"), ORDINARY_USER("ORDINARY_USER");
+        USER_MANAGEMENT("ROLE_USER_MANAGEMENT"), ORDINARY_USER("ROLE_ORDINARY_USER");
 
         public static final int MAX_LEN_ROLE_NAME = 32;
 

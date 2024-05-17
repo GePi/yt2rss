@@ -1,6 +1,5 @@
 package farm.giggle.yt2rss.config.security;
 
-import farm.giggle.yt2rss.model.repo.UserRepo;
 import farm.giggle.yt2rss.serv.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
