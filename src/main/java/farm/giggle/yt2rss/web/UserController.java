@@ -1,6 +1,7 @@
 package farm.giggle.yt2rss.web;
 
 import farm.giggle.yt2rss.config.ApplicationConfig;
+import farm.giggle.yt2rss.config.HasRightToUser;
 import farm.giggle.yt2rss.config.HasRightToUsers;
 import farm.giggle.yt2rss.config.security.MixUserManagement;
 import farm.giggle.yt2rss.exceptions.UserNotFoundException;
@@ -12,6 +13,7 @@ import org.springframework.security.oauth2.core.user.OAuth2User;
 import org.springframework.stereotype.Controller;
 import org.springframework.ui.Model;
 import org.springframework.web.bind.annotation.GetMapping;
+import org.springframework.web.bind.annotation.PostMapping;
 import org.springframework.web.bind.annotation.RequestMapping;
 import org.springframework.web.bind.annotation.RequestParam;
 
@@ -42,6 +44,13 @@ public class UserController {
             userService.becomeAdmin(id);
         }
         return "redirect:/";
+    }
+
+    @PostMapping("/delete")
+    @HasRightToUser
+    public String delete(@RequestParam("userId") Long userId) {
+        userService.deleteUser(userId);
+        return "redirect:/users";
     }
 
     @GetMapping

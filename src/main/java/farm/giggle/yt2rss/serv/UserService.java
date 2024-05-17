@@ -60,5 +60,12 @@ public class UserService {
         user.addRole(ordinaryUser);
         return userRepo.save(user);
     }
+
+    public void deleteUser(Long userId) {
+        if (userId == null || userId == 0) {
+            return;
+        }
+        userRepo.deleteById(userId);
+    }
 }
 

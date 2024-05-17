@@ -3,6 +3,7 @@ package farm.giggle.yt2rss.model.repo;
 import farm.giggle.yt2rss.config.security.Auth2ProviderEnum;
 import farm.giggle.yt2rss.model.Role;
 import farm.giggle.yt2rss.model.User;
+import org.jetbrains.annotations.NotNull;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.EntityGraph;
@@ -20,14 +21,13 @@ public interface UserRepo extends JpaRepository<User, Long> {
     User findUserByAuth2ProviderAndAuth2Id(Auth2ProviderEnum auth2ProviderEnum, String auth2Id);
 
     User findByUuid(UUID userUUID);
-    Page<User> findAll(Pageable pageable);
+    @NotNull Page<User> findAll(@NotNull Pageable pageable);
 
-    Optional<User> findById(Long Id);
+    @NotNull Optional<User> findById(@NotNull Long Id);
 
     @EntityGraph(attributePaths = {"userRoles"})
     Optional<User> getUserById(Long Id);
 
     @Query("SELECT r FROM Role r where r.roleName = :roleName")
     Role getRoleByName(@Param("roleName") Role.RoleEnum roleName);
-
 }

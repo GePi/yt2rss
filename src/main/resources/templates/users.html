@@ -49,8 +49,10 @@
                 <td th:text="${user.auth2Provider}"></td>
                 <td th:text="${user.uuid}"></td>
                 <td>
-                    <form th:action="@{/users/delete/}" method="post">
-                        <input hidden th:value="${user.id}" name="userId">
+                    <form th:action="@{/users/delete}" method="post">
+                        <label>
+                            <input hidden th:value="${user.id}" name="userId">
+                        </label>
                         <button type="submit" class="btn-action" value="Удалить">
                             <img src="/images/icon-trash-without-bg.png" width="25px" alt="&#128465;">Удалить
                         </button>
