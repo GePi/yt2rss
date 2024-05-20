@@ -1,0 +1,37 @@
+<!DOCTYPE html>
+<html xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Регистрация</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+
+<div class="hidden">
+    <div class="nav-links" th:fragment="custom-links-content">
+        <a th:href="@{/}">На главную</a>
+    </div>
+</div>
+
+<div th:replace="~{topmenu}"></div>
+
+<main>
+    <div class="main-part">
+        <div class="header-block">
+            <div class="header-title">Выберите удобного вам провайдера аутентификации.</div>
+        </div>
+        <div class="paragraph">
+            Чтобы показать вам ваши и только ваши каналы, файлы и RSS, необходимо
+        </div>
+        <div class="paragraph">
+            <a th:href="@{/oauth2/authorization/google}">зайти через Google</a>
+            <span> или </span>
+            <a th:href="@{/oauth2/authorization/github}">зайти через GitHub</a>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{footer}"></div>
+
+</body>
+</html>

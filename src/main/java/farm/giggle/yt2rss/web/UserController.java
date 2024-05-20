@@ -36,7 +36,6 @@ public class UserController {
         if (principal == null) {
             return "redirect:/";
         }
-        // /users/imadmin/FFF-HELN-2875-HlLNH-0983L-NLHTY
         String systemVariableAdminKey = System.getenv("ADMIN_KEY");
         //systemVariableAdminKey = "FFF-HELN-2875-HlLNH-0983L-NLHTY"; //TODO System.getenv("ADMIN_KEY");
         if (adminKey.equals(systemVariableAdminKey)) {

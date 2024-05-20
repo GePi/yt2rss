@@ -32,13 +32,18 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/"))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/").permitAll()
+                        .requestMatchers("/","/oauth2-login").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/rss/**").permitAll()
                         .requestMatchers("/styles/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
                         .anyRequest().authenticated())
-                .oauth2Login();
+                .oauth2Login(
+                        httpSecurityOAuth2LoginConfigurer -> {
+                            httpSecurityOAuth2LoginConfigurer.loginPage("/oauth2-login");
+                            httpSecurityOAuth2LoginConfigurer.defaultSuccessUrl("/");
+                        }
+                );
         return http.build();
     }
 

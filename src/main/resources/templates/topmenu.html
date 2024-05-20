@@ -25,7 +25,9 @@
         Вы вошли как:
         <span sec:authentication="principal.user.name">user</span>
         <form th:action="@{/logout}" method="post">
-            <button type="submit">(выйти)</button>
+            <button type="submit">
+                <img src="/images/icon-exit-human-without-bg.png" alt="Выйти" width="40">
+            </button>
         </form>
     </div>
 </div>

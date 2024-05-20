@@ -102,6 +102,10 @@ form {
     margin-left: 2em;
 }
 
+.navbar img{
+    cursor: pointer;
+}
+
 .navbar .user-info {
     display: flex;
     align-items: center;
