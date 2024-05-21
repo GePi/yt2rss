@@ -7,17 +7,17 @@ spring:
         registration:
           yandex:
             provider: yandex
-            client-id: 5c3a7947af2340f9862fe8b70e5ac16d
-            client-secret: 75c8b5d89137499cb1eae908dd3beefa
+            client-id: 
+            client-secret: 
             client-authentication-method: client_secret_basic
             authorization-grant-type: authorization_code
             redirect-uri: "{baseUrl}/login/oauth2/code/yandex"
           github:
-            client-id: c22df1cbf829963ee017
-            client-secret: de95a9bc5c76e6980510ca6839ca7d0299b4b67d
+            client-id: 
+            client-secret: 
           google:
-            client-id: 325803809182-01cotg0kfqmf7lvgk80sqlg6ea5gc5df.apps.googleusercontent.com
-            client-secret: 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
+            client-id: 
+            client-secret: 
         provider:
           yandex:
             authorization-uri: https://oauth.yandex.ru/authorize
