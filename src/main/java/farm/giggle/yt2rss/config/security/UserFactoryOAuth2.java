@@ -20,6 +20,7 @@ public class UserFactoryOAuth2 extends UserFactory {
 
         switch (userRequest.getClientRegistration().getRegistrationId()) {
             case "github" -> this.auth2Provider = Auth2ProviderEnum.GITHUB;
+            case "yandex" -> this.auth2Provider = Auth2ProviderEnum.YANDEX;
             default ->
                     throw new Auth2ProviderNotSupportedException(userRequest.getClientRegistration().getRegistrationId());
         }

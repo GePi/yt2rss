@@ -59,7 +59,7 @@ public class ChannelController {
                         applicationConfig.getChannelPage().getNumberEntriesOnPage());
 
         model.addAttribute("channels", channelPage.get().collect(Collectors.toList()));
-        model.addAttribute("totalPages", channelPage.getTotalPages());
+        model.addAttribute("totalPages", Math.max(channelPage.getTotalPages(), 1));
         UrlParams urlParams = UrlParams.of(UrlParam.of("userId", userId));
         model.addAttribute("sessionParamsString", urlParams.getParamString());
         model.addAttribute("sessionParams", urlParams);
@@ -113,7 +113,7 @@ public class ChannelController {
             return "redirect:/channels" + UrlParams.of(UrlParam.of("userId", userId)).getParamStringSeparated();
 
         model.addAttribute("files", filesPage.getContent());
-        model.addAttribute("totalPages", filesPage.getTotalPages());
+        model.addAttribute("totalPages", Math.max(filesPage.getTotalPages(), 1));
         model.addAttribute("channel", channel);
         model.addAttribute("sessionParamsString", UrlParams.of(UrlParam.of("userId", userId)).getParamString());
         return "files";

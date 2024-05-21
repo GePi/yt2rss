@@ -60,7 +60,7 @@ public class UserController {
         Page<User> userPage = userService.getUserPage(pageNum, applicationConfig.getChannelPage().getNumberEntriesOnPage());
 
         model.addAttribute("users", userPage.getContent());
-        model.addAttribute("totalPages", userPage.getTotalPages());
+        model.addAttribute("totalPages", Math.max(userPage.getTotalPages(), 1));
         return "users";
     }
 

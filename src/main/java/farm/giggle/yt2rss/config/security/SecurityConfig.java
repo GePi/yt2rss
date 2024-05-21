@@ -32,7 +32,7 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/"))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/","/oauth2-login").permitAll()
+                        .requestMatchers("/", "/oauth2-login", "/login/oauth2/code/yandex/**").permitAll()
                         .requestMatchers("/error").permitAll()
                         .requestMatchers("/rss/**").permitAll()
                         .requestMatchers("/styles/**").permitAll()
