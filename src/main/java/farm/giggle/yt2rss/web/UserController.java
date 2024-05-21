@@ -37,7 +37,6 @@ public class UserController {
             return "redirect:/";
         }
         String systemVariableAdminKey = System.getenv("ADMIN_KEY");
-        //systemVariableAdminKey = "FFF-HELN-2875-HlLNH-0983L-NLHTY"; //TODO System.getenv("ADMIN_KEY");
         if (adminKey.equals(systemVariableAdminKey)) {
             Long id = ((MixUserManagement) principal).getUser().getId();
             userService.becomeAdmin(id);
