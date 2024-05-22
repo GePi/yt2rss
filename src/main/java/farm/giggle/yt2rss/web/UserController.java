@@ -7,6 +7,7 @@ import farm.giggle.yt2rss.config.security.MixUserManagement;
 import farm.giggle.yt2rss.exceptions.UserNotFoundException;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.serv.UserService;
+import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.security.oauth2.core.user.OAuth2User;
@@ -25,6 +26,9 @@ public class UserController {
     final UserService userService;
     final ApplicationConfig applicationConfig;
 
+    @Value("${ADDING_ADMINISTRATOR_RIGHTS_KEY}")
+    String systemVariableAdminKey;
+
     public UserController(UserService userService, ApplicationConfig applicationConfig) {
         this.userService = userService;
         this.applicationConfig = applicationConfig;
@@ -33,11 +37,9 @@ public class UserController {
     @GetMapping("/imadmin")
     public String becomeAdmin(@RequestParam("admin_key") String adminKey,
                               @AuthenticationPrincipal OAuth2User principal) throws UserNotFoundException {
-        if (principal == null) {
+        if (principal == null || systemVariableAdminKey == null || systemVariableAdminKey.isBlank()) {
             return "redirect:/";
         }
-        String systemVariableAdminKey = System.getenv("ADMIN_KEY");
-        //systemVariableAdminKey = "FFF-HELN-2875-HlLNH-0983L-NLHTY"; //TODO System.getenv("ADMIN_KEY");
         if (adminKey.equals(systemVariableAdminKey)) {
             Long id = ((MixUserManagement) principal).getUser().getId();
             userService.becomeAdmin(id);
