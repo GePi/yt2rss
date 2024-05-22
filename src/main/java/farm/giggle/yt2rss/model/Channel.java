@@ -13,7 +13,8 @@ import java.util.UUID;
 public class Channel {
     @Id
     @Column(name = "id")
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "channels_generator")
+    @SequenceGenerator(name="channels_generator", sequenceName = "channel_SEQ", allocationSize=1)
     private Long id;
     @Column(name = "url", nullable = false)
     private String url;

@@ -14,7 +14,8 @@ import java.time.*;
         uniqueConstraints = {@UniqueConstraint(name = "FILE_IN_CHANNEL", columnNames = {"CHANNEL_ID", "VIDEO_ID"})})
 public class File {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "files_generator")
+    @SequenceGenerator(name="files_generator", sequenceName = "files_SEQ", allocationSize=1)
     @Column(name = "ID")
     private Long id;
     @Column(name = "VIDEO_ID", nullable = false)

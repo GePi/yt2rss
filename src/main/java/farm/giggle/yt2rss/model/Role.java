@@ -10,7 +10,8 @@ import lombok.NoArgsConstructor;
 @Table(name = "roles")
 public class Role {
     @Id
-    @GeneratedValue(strategy = GenerationType.SEQUENCE)
+    @GeneratedValue(strategy = GenerationType.SEQUENCE, generator = "roles_generator")
+    @SequenceGenerator(name="roles_generator", sequenceName = "roles_SEQ", allocationSize=1)
     private Long Id;
     @Column(length = RoleEnum.MAX_LEN_ROLE_NAME)
     @Enumerated(EnumType.STRING)
