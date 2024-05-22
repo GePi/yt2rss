@@ -26,6 +26,7 @@ spring:
             user-info-uri: https://login.yandex.ru/info
             user-name-attribute: id
             user-info-authentication-method: header
+
   jpa:
     open-in-view: false
     hibernate:
