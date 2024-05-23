@@ -22,4 +22,21 @@
   - `/downloaded` - принимает список скаченных эпизодов со ссылками на аудио-файлы.
 
 ## Технологии
-Java 17, Maven, Liquibase, Lombok, jsoup, Postgree SQL(посредством Spring Data JPA) , Spring Boot 3.0.6, OAuth2(посредством Spring Security), шаблонизатор Thymeleaf. 
+Java 17, Postgree SQL(посредством Spring Data JPA), Spring Boot 3.0.6, Docker, Maven, Liquibase, Lombok, jsoup, OAuth2(посредством Spring Security), шаблонизатор Thymeleaf. 
+
+## Настройка
+Для корректной работы приложения требуется установленная база данных на платформе PostgreSQL.
+Подробности можно найти в файле [docker-compose.yml](src%2Fmain%2Fresources%2Fdocker%2Fdb%2Fdocker-compose.yml).
+
+Для настройки базы данных и обеспечения работы приложения необходимо заполнить настройки ряда переменных (секретов).
+Полный список этих переменных приведен в файле [.env.sample](src%2Fmain%2Fresources%2Fdocker%2Fdb%2F.env.sample).
+
+Настройки могут быть заданы либо как переменные окружения операционной системы (env), 
+либо посредством создания и заполнения файла секретов [.env](src%2Fmain%2Fresources%2Fdocker%2Fdb%2F.env).
+
+Для обеспечения прозрачного переключения между файлом .env и переменными окружения в проекте 
+используется библиотека [me.paulschwarz:spring-dotenv](https://github.com/paulschwarz/spring-dotenv).
+
+
+
+ 
