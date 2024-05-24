@@ -1,7 +1,7 @@
 version: "1.0"
 services:
-  postgree:
-    container_name: y2rssdb_postgress
+  postgres:
+    container_name: y2rss_postgres
     image: postgres:16-alpine3.18
     environment:
       POSTGRES_DB: "y2rssdb"
@@ -9,7 +9,7 @@ services:
       POSTGRES_PASSWORD: ${DB_PASSWORD}
       PGDATA: "/var/lib/postgresql/data/pgdata"
     volumes:
-      - y2rssdb-data:/var/lib/postgresql/data
+      - y2rss-postgres-data:/var/lib/postgresql/data
     ports:
       - "${DB_PORT}:5432"
     healthcheck:
@@ -25,16 +25,16 @@ services:
           cpus: '1'
           memory: 2G
     networks:
-        - postgres
+        - y2rss_network
   pgadmin:
-    container_name: y2rssdb_pgadmin
+    container_name: y2rss_pgadmin
     image: dpage/pgadmin4:7.8
     environment:
       PGADMIN_DEFAULT_EMAIL: ${PGADMIN_DEFAULT_EMAIL}
       PGADMIN_DEFAULT_PASSWORD: ${PGADMIN_DEFAULT_PASSWORD}
       PGADMIN_CONFIG_SERVER_MODE: "False"
     volumes:
-      - pgadmin-data:/var/lib/pgadmin
+      - y2rss-pgadmin-data:/var/lib/pgadmin
     ports:
       - "${PGADMIN_PORT}:80"
     restart: unless-stopped
@@ -44,10 +44,10 @@ services:
           cpus: '0.5'
           memory: 1G
     networks:
-      - postgres
+      - y2rss_network
 volumes:
-  y2rssdb-data:
-  pgadmin-data:
+  y2rss-postgres-data:
+  y2rss-pgadmin-data:
 networks:
-  postgres:
-    driver: bridge
+  y2rss_network:
+

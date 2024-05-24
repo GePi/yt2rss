@@ -1,9 +1,9 @@
 spring:
   datasource:
-    url: jdbc:postgresql://localhost:${DB_PORT}/y2rssdb
+    url: jdbc:postgresql://${DB_HOST_LOCAL}:${DB_PORT_LOCAL}/y2rssdb
     driver-class-name: org.postgresql.Driver
-    username: ${DB_USERNAME}
-    password: ${DB_PASSWORD}
+    username: ${DB_USERNAME_LOCAL}
+    password: ${DB_PASSWORD_LOCAL}
   jpa:
     database: postgresql
     database-platform: org.hibernate.dialect.PostgreSQLDialect

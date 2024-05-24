@@ -37,6 +37,14 @@ Java 17, Postgree SQL(посредством Spring Data JPA), Spring Boot 3.0.6
 Для обеспечения прозрачного переключения между файлом .env и переменными окружения в проекте 
 используется библиотека [me.paulschwarz:spring-dotenv](https://github.com/paulschwarz/spring-dotenv).
 
+## Запуск
+PostreSQL + pgadmin разворачиваются с помощью [docker-compose.yml](src%2Fmain%2Fresources%2Fdocker%2Fdb%2Fdocker-compose.yml),
+cервис к  нему командой подобной ниже:
+```dockerfile
+docker run -d --name y2rss -p 8080:8080 --env-file src/main/resources/docker/db/.env --network db_y2rss_network docker.io/gepi/y2rss:0.0.2
+```
+В env необходимо установить активный профиль (ACTIVE_PROFILE) в значение `prod`.
+
 
 
  

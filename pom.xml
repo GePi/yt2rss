@@ -10,7 +10,7 @@
     </parent>
     <groupId>farm.giggle</groupId>
     <artifactId>yt2rss</artifactId>
-    <version>0.0.1-SNAPSHOT</version>
+    <version>0.0.2</version>
     <name>yt2rss</name>
     <description>yt2rss</description>
     <properties>
@@ -66,6 +66,7 @@
             <groupId>org.springframework.boot</groupId>
             <artifactId>spring-boot-starter-oauth2-client</artifactId>
         </dependency>
+
         <dependency>
             <groupId>org.thymeleaf.extras</groupId>
             <artifactId>thymeleaf-extras-springsecurity6</artifactId>
@@ -100,6 +101,8 @@
                 <groupId>org.springframework.boot</groupId>
                 <artifactId>spring-boot-maven-plugin</artifactId>
                 <configuration>
+                    <imageName>gepi/y2rss:${project.version}</imageName>
+                    <jvmArguments>-XX:NativeMemoryTracking=off</jvmArguments>
                     <excludes>
                         <exclude>
                             <groupId>org.projectlombok</groupId>

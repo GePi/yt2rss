@@ -12,3 +12,5 @@ https://www.youtube.com/channel/UCS7Ph8LwlIND9_32pNMv7ZQ
 Сельский джавист
 https://www.youtube.com/channel/UCmJc7tVBDG6R8x21sudricA
 
+
+docker run -d --name y2rss -p 8080:8080 --env-file src/main/resources/docker/db/.env --network db_y2rss_network docker.io/gepi/y2rss:0.0.2
