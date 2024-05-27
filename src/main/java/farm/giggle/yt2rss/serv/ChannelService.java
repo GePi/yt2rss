@@ -33,6 +33,7 @@ public class ChannelService {
     private final ChannelRepo channelRepo;
     private final FileRepo fileRepo;
     private final FileJournalService fileJournal;
+    private ApplicationConfig appConfig;
 
     public ChannelService(ChannelRepo channelRepo, FileRepo fileRepo, ApplicationConfig appConfig, FileJournalService fileJournal) {
         this.channelRepo = channelRepo;
