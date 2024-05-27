@@ -32,11 +32,12 @@ import java.util.function.Supplier;
 public class ChannelService {
     private final ChannelRepo channelRepo;
     private final FileRepo fileRepo;
-    private ApplicationConfig appConfig;
+    private final FileJournalService fileJournal;
 
-    public ChannelService(ChannelRepo channelRepo, FileRepo fileRepo, ApplicationConfig appConfig) {
+    public ChannelService(ChannelRepo channelRepo, FileRepo fileRepo, ApplicationConfig appConfig, FileJournalService fileJournal) {
         this.channelRepo = channelRepo;
         this.fileRepo = fileRepo;
+        this.fileJournal = fileJournal;
     }
 
     public Channel getChannel(Long id) {
@@ -47,6 +48,7 @@ public class ChannelService {
         Channel channel = new Channel(channelUrl, title, userSupplier.get());
         fileList.forEach(channel::addFile);
         channelRepo.save(channel);
+        fileJournal.add(channel.getFileList());
     }
 
     public void delChannel(Long channelId) {
@@ -108,7 +110,6 @@ public class ChannelService {
             return;
         }
 
-        //TODO перенести это в метод repository (сделать свою имплементацию)
         Map<String, File> filesByVideoIdMap = new HashMap<>();
         fileRepo.findFilesByVideoIdsList(channelId,
                 rssNewFiles.stream().map(RssFile::getVideoId).toList()).forEach(file -> filesByVideoIdMap.put(file.getVideoId(), file));

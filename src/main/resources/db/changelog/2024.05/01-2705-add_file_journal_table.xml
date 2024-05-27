@@ -1,0 +1,17 @@
+<?xml version="1.0" encoding="UTF-8"?>
+<databaseChangeLog xmlns="http://www.liquibase.org/xml/ns/dbchangelog"
+                   xmlns:xsi="http://www.w3.org/2001/XMLSchema-instance"
+                   xsi:schemaLocation="http://www.liquibase.org/xml/ns/dbchangelog
+                   https://www.liquibase.org/xml/ns/dbchangelog/dbchangelog-latest.xsd">
+
+    <changeSet id="0" author="admin">
+        <createTable tableName="file_journal">
+            <column name="id" type="uuid"/>
+            <column name="url" type="varchar(255)" />
+            <column name="publication_time" type="timestamp"/>
+            <column name="user_uuid" type="uuid"/>
+            <column name="file_id" type="bigint"/>
+        </createTable>
+        <addPrimaryKey tableName="file_journal" columnNames="id"/>
+    </changeSet>
+</databaseChangeLog>
