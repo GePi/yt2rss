@@ -50,4 +50,5 @@ volumes:
   y2rss-pgadmin-data:
 networks:
   y2rss_network:
+    driver: bridge
 
