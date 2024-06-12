@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.web;
+package farm.giggle.yt2rss.controllers;
 
 import farm.giggle.yt2rss.config.security.MixUserManagement;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;

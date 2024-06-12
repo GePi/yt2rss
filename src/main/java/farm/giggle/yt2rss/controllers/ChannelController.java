@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.web;
+package farm.giggle.yt2rss.controllers;
 
 import farm.giggle.yt2rss.config.ApplicationConfig;
 import farm.giggle.yt2rss.config.HasRightToChannel;
@@ -9,8 +9,8 @@ import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.serv.ChannelService;
 import farm.giggle.yt2rss.serv.UserService;
-import farm.giggle.yt2rss.youtube.RssToDBConverter;
-import farm.giggle.yt2rss.youtube.Y2Rss;
+import farm.giggle.yt2rss.youtube.services.YTEpisodeToDBFileConverter;
+import farm.giggle.yt2rss.youtube.services.YoutubeParser;
 import lombok.extern.slf4j.Slf4j;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -79,14 +79,14 @@ public class ChannelController {
     public String addChannelPostHandler(@RequestParam("url") String urlInput,
                                         @RequestParam(value = "userId", required = false) Long userId,
                                         @AuthenticationPrincipal MixUserManagement principal) {
-        Y2Rss rss = Y2Rss.fromUrl(urlInput.trim());
+        YoutubeParser rss = YoutubeParser.createFromUrl(urlInput.trim());
 
         if (rss != null) {
             channelService.addChannel(
                     rss.getUrl(),
                     rss.getTitle(),
                     () -> userService.getUserById(userId != null ? userId : principal.getUser().getId()),
-                    rss.getFileList().stream().map(RssToDBConverter::rssFile2DBFile).toList());
+                    rss.getFileList().stream().map(YTEpisodeToDBFileConverter::rssFile2DBFile).toList());
         }
         return "redirect:/channels" + UrlParams.of(UrlParam.of("userId", userId)).getParamStringSeparated();
     }

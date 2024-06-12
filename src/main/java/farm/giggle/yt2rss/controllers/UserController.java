@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.web;
+package farm.giggle.yt2rss.controllers;
 
 import farm.giggle.yt2rss.config.ApplicationConfig;
 import farm.giggle.yt2rss.config.HasRightToUser;

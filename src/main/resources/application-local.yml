@@ -10,7 +10,7 @@ spring:
     show-sql: true
     defer-datasource-initialization: false
   liquibase:
-    enabled: true
+    enabled: false
 logging:
   level:
     org.springframework.security: DEBUG

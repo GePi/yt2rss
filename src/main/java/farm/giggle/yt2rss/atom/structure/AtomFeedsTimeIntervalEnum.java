@@ -1,10 +1,10 @@
-package farm.giggle.yt2rss.api;
+package farm.giggle.yt2rss.atom.structure;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
-public enum RssTimeIntervalEnum {
+public enum AtomFeedsTimeIntervalEnum {
     LAST_DAY(1440L, ChronoUnit.MINUTES),
     LAST_HOUR(60L, ChronoUnit.MINUTES),
     FAR_FAR_AWAY();
@@ -12,12 +12,12 @@ public enum RssTimeIntervalEnum {
     private final Long minusChronUnitsVal;
     private final ChronoUnit chronoUnit;
 
-    RssTimeIntervalEnum(Long minusChronUnitsVal, ChronoUnit chronoUnit) {
+    AtomFeedsTimeIntervalEnum(Long minusChronUnitsVal, ChronoUnit chronoUnit) {
         this.minusChronUnitsVal = minusChronUnitsVal;
         this.chronoUnit = chronoUnit;
     }
 
-    RssTimeIntervalEnum() {
+    AtomFeedsTimeIntervalEnum() {
         this.minusChronUnitsVal = 0L;
         this.chronoUnit = ChronoUnit.FOREVER;
     }

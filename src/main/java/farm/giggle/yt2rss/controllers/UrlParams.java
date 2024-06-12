@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.web;
+package farm.giggle.yt2rss.controllers;
 
 import lombok.NonNull;
 import org.jetbrains.annotations.NotNull;

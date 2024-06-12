@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.youtube;
+package farm.giggle.yt2rss.youtube.structure;
 
 import lombok.Data;
 import lombok.NoArgsConstructor;
@@ -7,9 +7,8 @@ import java.time.OffsetDateTime;
 
 @Data
 @NoArgsConstructor
-public class RssFile {
+public class YoutubeChannelView {
     private String videoId;
-    private String videoIdOld;
     private String videoUrl;
     private String title;
     private OffsetDateTime publishedAt;

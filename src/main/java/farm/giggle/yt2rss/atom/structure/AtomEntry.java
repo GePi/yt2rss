@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.producedRssStructure;
+package farm.giggle.yt2rss.atom.structure;
 
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
@@ -9,20 +9,24 @@ import java.time.OffsetDateTime;
 
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
-public class RssEntry {
-    private String title;
+public class AtomEntry {
+    private static final String CONTENT_PLACEHOLDER = "Content";
     private String id;
-    private RssLink link;
+    private String title;
+    private AtomLink link;
+    private String content;
+    private AtomAuthor author = new AtomAuthor(AtomAuthor.AUTHOR_NAME_PLACEHOLDER);
     @XmlJavaTypeAdapter(OffsetDateTimeAdapter.class)
     private OffsetDateTime published;
     @XmlJavaTypeAdapter(OffsetDateTimeAdapter.class)
     private OffsetDateTime updated;
 
-    public RssEntry(String title, String id, RssLink link, OffsetDateTime published, OffsetDateTime updated) {
+    public AtomEntry(String title, String id, AtomLink link, OffsetDateTime published, OffsetDateTime updated) {
         this.title = title;
         this.id = id;
         this.link = link;
         this.published = published;
         this.updated = updated;
+        this.content  = CONTENT_PLACEHOLDER;
     }
 }

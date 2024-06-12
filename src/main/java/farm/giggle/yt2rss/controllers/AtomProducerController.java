@@ -1,10 +1,10 @@
-package farm.giggle.yt2rss.web;
+package farm.giggle.yt2rss.controllers;
 
-import farm.giggle.yt2rss.api.RssTimeIntervalEnum;
+import farm.giggle.yt2rss.atom.structure.AtomFeedsTimeIntervalEnum;
 import farm.giggle.yt2rss.exceptions.JaxbMarshallerException;
 import farm.giggle.yt2rss.exceptions.ResourceNotFoundException;
 import farm.giggle.yt2rss.exceptions.UserNotFoundException;
-import farm.giggle.yt2rss.serv.RssProducerServ;
+import farm.giggle.yt2rss.atom.services.AtomFeedProducer;
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
 import lombok.extern.slf4j.Slf4j;
@@ -19,19 +19,19 @@ import java.util.UUID;
 
 @Slf4j
 @Controller
-@RequestMapping("/rss")
-public class RssProducerController {
-    RssProducerServ rssProducerServ;
+@RequestMapping("/atom")
+public class AtomProducerController {
+    AtomFeedProducer atomFeedProducer;
 
-    public RssProducerController(RssProducerServ rssProducerServ) {
-        this.rssProducerServ = rssProducerServ;
+    public AtomProducerController(AtomFeedProducer atomFeedProducer) {
+        this.atomFeedProducer = atomFeedProducer;
     }
 
     @GetMapping(value = {"/channel/{channelUUID}", "/channel/{channelUUID}/{timeInterval}"}, produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
-    public ResponseEntity<String> getChannelRss(@PathVariable("channelUUID") UUID channelUUID,
-                                                @PathVariable(value = "timeInterval", required = false) RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException, ResourceNotFoundException {
-        String xml = rssProducerServ.getChannelRss(channelUUID, timeInterval);
+    public ResponseEntity<String> getChannelFeed(@PathVariable("channelUUID") UUID channelUUID,
+                                                 @PathVariable(value = "timeInterval", required = false) AtomFeedsTimeIntervalEnum timeInterval) throws JaxbMarshallerException, ResourceNotFoundException {
+        String xml = atomFeedProducer.getAtomFeedForChannel(channelUUID, timeInterval);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
         return new ResponseEntity<>(xml, headers, HttpStatus.OK);
@@ -39,9 +39,9 @@ public class RssProducerController {
 
     @GetMapping(value = {"/user/{userUUID}", "/user/{userUUID}/{timeInterval}"}, produces = MediaType.APPLICATION_XML_VALUE)
     @ResponseBody
-    public ResponseEntity<String> getUserAllFilesRss(@PathVariable("userUUID") UUID userUUID,
-                                                     @PathVariable(value = "timeInterval", required = false) RssTimeIntervalEnum timeInterval) throws JaxbMarshallerException, UserNotFoundException {
-        String xml = rssProducerServ.getUserRss(userUUID, timeInterval);
+    public ResponseEntity<String> getUserFeed(@PathVariable("userUUID") UUID userUUID,
+                                              @PathVariable(value = "timeInterval", required = false) AtomFeedsTimeIntervalEnum timeInterval) throws JaxbMarshallerException, UserNotFoundException {
+        String xml = atomFeedProducer.getAtomFeedForUser(userUUID, timeInterval);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
         return new ResponseEntity<>(xml, headers, HttpStatus.OK);
@@ -53,6 +53,6 @@ public class RssProducerController {
         log.error("RssProducerError", e);
         HttpHeaders headers = new HttpHeaders();
         headers.setContentType(MediaType.APPLICATION_XML);
-        return new ResponseEntity<>(rssProducerServ.getErrorRss(e), headers, HttpStatus.INTERNAL_SERVER_ERROR);
+        return new ResponseEntity<>(atomFeedProducer.getErrorAtom(e), headers, HttpStatus.INTERNAL_SERVER_ERROR);
     }
 }

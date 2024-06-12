@@ -1,6 +1,7 @@
-package farm.giggle.yt2rss.youtube;
+package farm.giggle.yt2rss.youtube.services;
 
 
+import farm.giggle.yt2rss.youtube.structure.YoutubeChannelView;
 import org.jsoup.Jsoup;
 import org.jsoup.nodes.Document;
 import org.jsoup.nodes.Element;
@@ -14,7 +15,7 @@ import java.util.Set;
 import java.util.regex.Matcher;
 import java.util.regex.Pattern;
 
-public class Y2Rss {
+public class YoutubeParser {
     private static final String CHANNEL_URL_PREFIX = "https://www.youtube.com/feeds/videos.xml?channel_id=";
     private static final Set<String> CHANNEL_PATTERNS = Set.of("/channel/([A-Za-z0-9_-]+)$", "channel_id=([A-Za-z0-9_-]+)$");
     private static final String CHANNEL_PATTERN_IN_HTML = "key\":\"browse_id\",\"value\":\"([^\"]+)\""; //"key":"browse_id","value":"UCz9iqx91UzlKg-WbBnlOR2g"
@@ -25,7 +26,7 @@ public class Y2Rss {
     private final String channelId;
     private final Document rssDocument;
 
-    public static Y2Rss fromUrl(String url) {
+    public static YoutubeParser createFromUrl(String url) {
         final String channelId = extractChannelId(url);
         if (channelId == null) {
             return null;
@@ -36,10 +37,10 @@ public class Y2Rss {
         } catch (IOException e) {
             return null;
         }
-        return new Y2Rss(channelId, rssDocument);
+        return new YoutubeParser(channelId, rssDocument);
     }
 
-    private Y2Rss(String channelId, Document rssDocument) {
+    private YoutubeParser(String channelId, Document rssDocument) {
         this.channelId = channelId;
         this.rssDocument = rssDocument;
     }
@@ -55,23 +56,23 @@ public class Y2Rss {
         return "";
     }
 
-    public List<RssFile> getFileList() {
-        List<RssFile> rssFiles = new ArrayList<>();
+    public List<YoutubeChannelView> getFileList() {
+        List<YoutubeChannelView> youtubeChannelViews = new ArrayList<>();
         for (Element e : rssDocument.select("entry")) {
-            RssFile rssFile = new RssFile();
+            YoutubeChannelView youtubeChannelView = new YoutubeChannelView();
 
-            rssFile.setVideoId(e.select("yt|videoId").text());
-            rssFile.setTitle(e.select("title").text());
-            rssFile.setVideoUrl(e.select("link").attr("href"));
+            youtubeChannelView.setVideoId(e.select("yt|videoId").text());
+            youtubeChannelView.setTitle(e.select("title").text());
+            youtubeChannelView.setVideoUrl(e.select("link").attr("href"));
 
             String dateString = e.select("published").text();
-            rssFile.setPublishedAt(OffsetDateTime.parse(dateString, youtubeDataTimeFormatter));
+            youtubeChannelView.setPublishedAt(OffsetDateTime.parse(dateString, youtubeDataTimeFormatter));
             dateString = e.select("updated").text();
-            rssFile.setUpdatedAt(OffsetDateTime.parse(dateString, youtubeDataTimeFormatter));
+            youtubeChannelView.setUpdatedAt(OffsetDateTime.parse(dateString, youtubeDataTimeFormatter));
 
-            rssFiles.add(rssFile);
+            youtubeChannelViews.add(youtubeChannelView);
         }
-        return rssFiles;
+        return youtubeChannelViews;
     }
 
     private static String extractChannelId(String url) {
