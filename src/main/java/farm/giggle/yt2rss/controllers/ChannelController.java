@@ -3,12 +3,12 @@ package farm.giggle.yt2rss.controllers;
 import farm.giggle.yt2rss.config.ApplicationConfig;
 import farm.giggle.yt2rss.config.HasRightToChannel;
 import farm.giggle.yt2rss.config.HasRightToUser;
-import farm.giggle.yt2rss.config.security.MixUserManagement;
+import farm.giggle.yt2rss.config.security.userservice.MixUserManagement;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
-import farm.giggle.yt2rss.serv.ChannelService;
-import farm.giggle.yt2rss.serv.UserService;
+import farm.giggle.yt2rss.services.ChannelService;
+import farm.giggle.yt2rss.services.UserService;
 import farm.giggle.yt2rss.youtube.services.YTEpisodeToDBFileConverter;
 import farm.giggle.yt2rss.youtube.services.YoutubeParser;
 import lombok.extern.slf4j.Slf4j;
@@ -33,8 +33,8 @@ public class ChannelController {
     private final ApplicationConfig applicationConfig;
 
     public ChannelController(ChannelService channelService, ApplicationConfig applicationConfig, UserService userService) {
-        this.channelService = channelService;
         this.applicationConfig = applicationConfig;
+        this.channelService = channelService;
         this.userService = userService;
     }
 
@@ -50,7 +50,7 @@ public class ChannelController {
         User userOwnerResource = userId != null ? userService.getUserById(userId) : principal.getUser();
 
         Integer pageNum = Objects.requireNonNullElse(page, 1) - 1;
-        ApplicationConfig.SortOrder pageSort = Objects.requireNonNullElse(sort, ApplicationConfig.SortOrder.TITLE);
+        ApplicationConfig.SortOrder pageSort = Objects.requireNonNullElse(sort, ApplicationConfig.SortOrder.UPDATED);
 
         Page<Channel> channelPage =
                 channelService.getChannelPage(userOwnerResource.getId(),
@@ -66,6 +66,27 @@ public class ChannelController {
         return "channels";
     }
 
+    @GetMapping("/files")
+    @HasRightToChannel
+    public String filesPage(@RequestParam("channelId") Long channelId,
+                            @RequestParam(value = "userId", required = false) Long userId,
+                            @RequestParam(value = "page", required = false) Integer page,
+                            @RequestParam(value = "sort", required = false) ApplicationConfig.SortOrder sort,
+                            Model model) {
+
+        Integer pageNum = Objects.requireNonNullElse(page, 1) - 1;
+        Page<File> filesPage = channelService.getFilePage(channelId, sort, pageNum, applicationConfig.getChannelPage().getNumberEntriesOnPage());
+        Channel channel = channelService.getChannel(channelId);
+        if (channel == null)
+            return "redirect:/channels" + UrlParams.of(UrlParam.of("userId", userId)).getParamStringSeparated();
+
+        model.addAttribute("files", filesPage.getContent());
+        model.addAttribute("totalPages", Math.max(filesPage.getTotalPages(), 1));
+        model.addAttribute("channel", channel);
+        model.addAttribute("sessionParamsString", UrlParams.of(UrlParam.of("userId", userId)).getParamString());
+        return "files";
+    }
+
     @GetMapping("/add-channel")
     public String addChannelPage(@RequestParam(value = "userId", required = false) Long userId,
                                  Model model) {
@@ -76,18 +97,15 @@ public class ChannelController {
 
     @PostMapping("/add-channel")
     @HasRightToUser
-    public String addChannelPostHandler(@RequestParam("url") String urlInput,
+    public String addChannelPostHandler(@RequestParam("url") String url,
                                         @RequestParam(value = "userId", required = false) Long userId,
                                         @AuthenticationPrincipal MixUserManagement principal) {
-        YoutubeParser rss = YoutubeParser.createFromUrl(urlInput.trim());
-
-        if (rss != null) {
-            channelService.addChannel(
-                    rss.getUrl(),
-                    rss.getTitle(),
-                    () -> userService.getUserById(userId != null ? userId : principal.getUser().getId()),
-                    rss.getFileList().stream().map(YTEpisodeToDBFileConverter::rssFile2DBFile).toList());
-        }
+        YoutubeParser ytParser = YoutubeParser.createFromUrl(url.trim());
+        channelService.addChannel(
+                ytParser.getUrl(),
+                ytParser.getTitle(),
+                () -> userService.getUserById(userId != null ? userId : principal.getUser().getId()),
+                ytParser.getEpisodes().stream().map(YTEpisodeToDBFileConverter::createFileByYTEpisode).toList());
         return "redirect:/channels" + UrlParams.of(UrlParam.of("userId", userId)).getParamStringSeparated();
     }
 
@@ -97,26 +115,6 @@ public class ChannelController {
                                         @RequestParam(value = "userId", required = false) Long userId) {
         channelService.delChannel(channelId);
         return "redirect:/channels" + UrlParams.of(UrlParam.of("userId", userId)).getParamStringSeparated();
-    }
-
-    @GetMapping("/files")
-    @HasRightToChannel
-    public String filesPage(@RequestParam("channelId") Long channelId,
-                            @RequestParam(value = "userId", required = false) Long userId,
-                            @RequestParam(value = "page", required = false) Integer page,
-                            Model model) {
-
-        Integer pageNum = Objects.requireNonNullElse(page, 1) - 1;
-        Page<File> filesPage = channelService.getFilePage(channelId, pageNum, applicationConfig.getChannelPage().getNumberEntriesOnPage());
-        Channel channel = channelService.getChannel(channelId);
-        if (channel == null)
-            return "redirect:/channels" + UrlParams.of(UrlParam.of("userId", userId)).getParamStringSeparated();
-
-        model.addAttribute("files", filesPage.getContent());
-        model.addAttribute("totalPages", Math.max(filesPage.getTotalPages(), 1));
-        model.addAttribute("channel", channel);
-        model.addAttribute("sessionParamsString", UrlParams.of(UrlParam.of("userId", userId)).getParamString());
-        return "files";
     }
 
     @GetMapping("/update")

@@ -1,5 +1,6 @@
 <!DOCTYPE html>
-<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<html lang="en" xmlns:th="http://www.thymeleaf.org"
+      xmlns:time="http://www.thymeleaf.org/extras/java8time">
 <head>
     <meta charset="UTF-8">
     <title>Список файлов</title>
@@ -33,14 +34,14 @@
             <thead>
             <tr>
                 <th>URL оригинала</th>
-                <th>Время обновления файла</th>
+                <th>Время обновления файла (UTC)</th>
                 <th>Скаченный файл</th>
             </tr>
             </thead>
             <tbody>
             <tr th:each="file : ${files}">
                 <td><a th:href="${file.getOriginalUrl}" th:text="${file.title}">Ссылка на файл</a></td>
-                <td th:text="${file.publishedAt}"></td>
+                <td th:text="${#temporals.format(file.updatedAt, 'dd MMMM yyyy HH:mm:ss')}"></td>
                 <td>
                     <a th:if="${file.downloadedFileUrl != null and file.downloadedFileUrl != ''}"
                        th:href="${file.downloadedFileUrl}" th:text="${file.downloadedFileUrl}">Ссылка на скаченный

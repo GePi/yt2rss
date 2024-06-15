@@ -1,7 +1,6 @@
-package farm.giggle.yt2rss.config.security;
+package farm.giggle.yt2rss.config.security.userservice;
 
-import farm.giggle.yt2rss.model.repo.UserRepo;
-import farm.giggle.yt2rss.serv.UserService;
+import farm.giggle.yt2rss.services.UserService;
 import org.springframework.security.oauth2.client.userinfo.DefaultOAuth2UserService;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserRequest;
 import org.springframework.security.oauth2.client.userinfo.OAuth2UserService;

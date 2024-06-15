@@ -25,12 +25,13 @@
             <p>Пожалуйста, введите URL канала, который вы хотите добавить.</p>
             <p>Убедитесь, что URL правильный и доступен.</p>
             <p class="note">* Правильно: https://www.youtube.com/user/plushev</p>
-            <p class="note">* Правильно: https://www.youtube.com/channel/UCS7Ph8LwlIND9_32pNMv7ZQ</p>
-            <p class="note">* Правильно: https://www.youtube.com/feeds/videos.xml?channel_id=UCTVk323gzizpujtn2T_BL7w</p>
-
+            <p class="note">* Правильно: https://www.youtube.com/@KitayG</p>
+            <p class="note">* Правильно: https://www.youtube.com/channel/UC0fMl-FpIznL85RjoaTtuXQ</p>
+            <p class="note">* Правильно:
+                https://www.youtube.com/feeds/videos.xml?channel_id=UCTVk323gzizpujtn2T_BL7w</p>
             <form method="post" th:action="@{/channels/add-channel}">
                 <label for="url-input">URL канала:</label>
-                <input type="text" id="url-input" name="url" placeholder="Введите URL канала">
+                <input class="input-channel" type="text" id="url-input" name="url" placeholder="Введите URL канала">
                 <th:block th:each="sessionParam : ${sessionParams}">
                     <input type="hidden" th:value="${sessionParam.value}" th:name="${sessionParam.name}"/>
                 </th:block>

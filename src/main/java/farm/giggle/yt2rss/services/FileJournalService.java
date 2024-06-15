@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.serv;
+package farm.giggle.yt2rss.services;
 
 import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.FileJournal;
@@ -21,5 +21,8 @@ public class FileJournalService {
         fileJournalRepo.saveAll(
                 fileList.stream().map(FileJournal::new).toList()
         );
+    }
+    public void add(File file) {
+        fileJournalRepo.save(new FileJournal(file));
     }
 }

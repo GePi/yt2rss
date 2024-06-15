@@ -1,0 +1,45 @@
+<!DOCTYPE html>
+<html lang="en" xmlns:th="http://www.thymeleaf.org">
+<head>
+    <meta charset="UTF-8">
+    <title>Добавление приглашения для пользователя</title>
+    <link rel="stylesheet" href="/styles/styles.css">
+</head>
+<body>
+
+<div class="hidden">
+    <div class="nav-links" th:fragment="custom-links-content">
+        <a th:href="@{/}">На главную</a>
+        <span>|</span>
+        <a href="/channels">К списку каналов</a>
+    </div>
+</div>
+<div th:replace="~{topmenu}"></div>
+
+<main>
+    <div class="main-part">
+        <div class="header-block">
+            <div class="header-title">Добавление приглашения для пользователя</div>
+        </div>
+        <div class="form-container">
+            <p>Добавьте код приглашения пользователю</p>
+            <form method="post" th:action="@{/users/add_invite}">
+                <label for="invite">Код приглашения (36 символов):</label>
+                <input class="input-channel" type="text" id="invite" name="invite" placeholder="Введите произвольный текст, возможны любые символы">
+                <div class="form-buttons">
+                    <button type="submit" class="btn">
+                        <img src="/images/icon-add-without-bg.png" alt="Add" width="25px"> Добавить
+                    </button>
+                    <button type="button" class="btn" onclick="history.back();">
+                        <img src="/images/icon-back-without-bg.png" alt="Back" width="25px"> Отменить
+                    </button>
+                </div>
+            </form>
+        </div>
+    </div>
+</main>
+
+<div th:replace="~{footer}"></div>
+
+</body>
+</html>

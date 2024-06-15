@@ -1,6 +1,6 @@
-package farm.giggle.yt2rss.config.security;
+package farm.giggle.yt2rss.config.security.userservice;
 
-import farm.giggle.yt2rss.serv.UserService;
+import farm.giggle.yt2rss.services.UserService;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserRequest;
 import org.springframework.security.oauth2.client.oidc.userinfo.OidcUserService;
 import org.springframework.security.oauth2.core.OAuth2AuthenticationException;

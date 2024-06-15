@@ -6,6 +6,7 @@ import java.time.temporal.ChronoUnit;
 
 public enum AtomFeedsTimeIntervalEnum {
     LAST_DAY(1440L, ChronoUnit.MINUTES),
+    LAST_THREE_DAYS(3L, ChronoUnit.DAYS),
     LAST_HOUR(60L, ChronoUnit.MINUTES),
     FAR_FAR_AWAY();
 

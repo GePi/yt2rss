@@ -1,11 +1,11 @@
 package farm.giggle.yt2rss.config;
 
-import farm.giggle.yt2rss.config.security.MixUserManagement;
+import farm.giggle.yt2rss.config.security.userservice.MixUserManagement;
 import farm.giggle.yt2rss.exceptions.ResourceAccessDeniedException;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.model.User;
-import farm.giggle.yt2rss.serv.ChannelService;
-import farm.giggle.yt2rss.serv.UserService;
+import farm.giggle.yt2rss.services.ChannelService;
+import farm.giggle.yt2rss.services.UserService;
 import org.springframework.security.core.Authentication;
 import org.springframework.security.core.context.SecurityContext;
 import org.springframework.security.core.context.SecurityContextHolder;

@@ -1,11 +1,13 @@
-package farm.giggle.yt2rss.serv;
+package farm.giggle.yt2rss.services;
 
 import farm.giggle.yt2rss.config.security.Auth2ProviderEnum;
+import farm.giggle.yt2rss.exceptions.UserCannotBeRegisteredException;
 import farm.giggle.yt2rss.exceptions.UserNotFoundException;
 import farm.giggle.yt2rss.model.Role;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.model.UserRole;
 import farm.giggle.yt2rss.model.repo.UserRepo;
+import jakarta.servlet.http.HttpSession;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.PageRequest;
 import org.springframework.stereotype.Service;
@@ -17,9 +19,13 @@ import java.util.UUID;
 @Transactional
 public class UserService {
     final private UserRepo userRepo;
+    private final HttpSession httpSession;
+    private final InviteService inviteService;
 
-    public UserService(UserRepo userRepo) {
+    public UserService(UserRepo userRepo, HttpSession httpSession, InviteService inviteService) {
         this.userRepo = userRepo;
+        this.httpSession = httpSession;
+        this.inviteService = inviteService;
     }
 
     public User getUserById(Long userId) {
@@ -55,6 +61,12 @@ public class UserService {
     }
 
     public User createOrdinaryUser(String name, Auth2ProviderEnum auth2Provider, String auth2Id, UUID uuid) {
+        String invite_code = (String) httpSession.getAttribute("invite_code");
+        if (invite_code == null || !inviteService.captureCode(invite_code)) {
+            throw new UserCannotBeRegisteredException(
+                    "Для регистрации необходимо приглашение. Код приглашения можно ввести на главной странице.");
+        }
+
         Role ordinaryUser = userRepo.getRoleByName(Role.RoleEnum.ORDINARY_USER);
         User user = new User(name, auth2Provider, auth2Id, uuid);
         user.addRole(ordinaryUser);

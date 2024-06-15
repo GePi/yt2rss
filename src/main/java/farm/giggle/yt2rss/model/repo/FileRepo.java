@@ -1,7 +1,7 @@
 package farm.giggle.yt2rss.model.repo;
 
 import farm.giggle.yt2rss.model.File;
-import jakarta.persistence.Tuple;
+import farm.giggle.yt2rss.services.dto.LatestChannelUpdateDatesDTO;
 import org.springframework.data.domain.Page;
 import org.springframework.data.domain.Pageable;
 import org.springframework.data.jpa.repository.JpaRepository;
@@ -25,6 +25,6 @@ public interface FileRepo extends JpaRepository<File, Long> {
     @Query(value = "SELECT f FROM File f WHERE f.channel.id = :channelId AND f.videoId IN :videoIds")
     List<File> findFilesByVideoIdsList(@Param("channelId") Long channelId, @Param("videoIds") Collection<String> videoIds);
 
-    @Query(value = "SELECT C.id, c.url, max(f.published_at), max(f.updated_at) FROM channel as c INNER JOIN files as f ON c.id = f.channel_id GROUP BY C.id, c.url", nativeQuery = true)
-    List<Tuple> findChannelsWithLatestFileDates();
+    @Query(value = "SELECT new farm.giggle.yt2rss.services.dto.LatestChannelUpdateDatesDTO(c.id, c.url, c.title, max(f.publishedAt), max(f.updatedAt)) FROM Channel c INNER JOIN File f ON c.id = f.channel.id GROUP BY c.id, c.url")
+    List<LatestChannelUpdateDatesDTO> findChannelsWithLatestFileDates();
 }

@@ -1,13 +1,16 @@
 package farm.giggle.yt2rss.atom.services;
 
-import farm.giggle.yt2rss.atom.structure.*;
+import farm.giggle.yt2rss.atom.structure.AtomEntry;
+import farm.giggle.yt2rss.atom.structure.AtomFeed;
+import farm.giggle.yt2rss.atom.structure.AtomFeedsTimeIntervalEnum;
+import farm.giggle.yt2rss.atom.structure.AtomLink;
 import farm.giggle.yt2rss.exceptions.JaxbMarshallerException;
 import farm.giggle.yt2rss.exceptions.ResourceNotFoundException;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
-import farm.giggle.yt2rss.serv.ChannelService;
-import farm.giggle.yt2rss.serv.UserService;
+import farm.giggle.yt2rss.services.ChannelService;
+import farm.giggle.yt2rss.services.UserService;
 import jakarta.xml.bind.JAXBContext;
 import jakarta.xml.bind.JAXBException;
 import jakarta.xml.bind.Marshaller;
@@ -37,32 +40,40 @@ public class AtomFeedProducer {
     }
 
     @Transactional
-    public String getAtomFeedForUser(UUID userUUID, AtomFeedsTimeIntervalEnum timeInterval) throws JaxbMarshallerException {
+    public String getUserAtomXML(UUID userUUID, AtomFeedsTimeIntervalEnum timeInterval, String requestURL) throws JaxbMarshallerException, ResourceNotFoundException {
         User user = userService.getUserByUUID(userUUID);
-        AtomFeed atomFeed = createAtomFeed(user, (timeInterval == null) ? AtomFeedsTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
+        if (user == null) {
+            throw new ResourceNotFoundException("Пользователь не найден");
+        }
+        AtomFeed atomFeed = createAtomFeed(user, requestURL, (timeInterval == null) ? AtomFeedsTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
         return marshal(atomFeed);
     }
 
     @Transactional
-    public String getAtomFeedForChannel(UUID channelUUID, AtomFeedsTimeIntervalEnum timeInterval) throws JaxbMarshallerException, ResourceNotFoundException {
+    public String getChannelAtomXML(UUID channelUUID, AtomFeedsTimeIntervalEnum timeInterval, String requestURL) throws JaxbMarshallerException, ResourceNotFoundException {
         Channel channel = channelService.getChannel(channelUUID);
         if (channel == null) {
-            throw new ResourceNotFoundException("Канал с таким номером не найден");
+            throw new ResourceNotFoundException("Канал не найден");
         }
-        AtomFeed atomFeed = createAtomFeed(channel, (timeInterval == null) ? AtomFeedsTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
+        AtomFeed atomFeed = createAtomFeed(channel, requestURL, (timeInterval == null) ? AtomFeedsTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
         return marshal(atomFeed);
     }
 
-    public String getErrorAtom(Exception e) {
+    public String getErrorAtomXML(Exception e) throws JaxbMarshallerException {
+        return marshal(createAtomFeed(e));
+    }
+
+    private AtomFeed createAtomFeed(Exception e) {
         ResponseStatus annotation = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);
-        AtomFeed atomFeed = AtomFeed.builder()
-                .setTitle(e.getMessage())
-                .setId("http://y2rss.ru/error")
+        return AtomFeed.builder()
+                .setTitle("Произошла ошибка")
+                .setId("https://y2rss.ru/error")
                 .setSubtitle(annotation != null ?
                         annotation.code().value() + " " + annotation.code().getReasonPhrase() :
                         HttpStatus.INTERNAL_SERVER_ERROR.value() + " " + HttpStatus.INTERNAL_SERVER_ERROR.getReasonPhrase())
+                .setLink(new AtomLink(AtomLink.REL_SELF, AtomLink.TYPE_RSS, "https://y2rss.ru/error" ))
+                .setUpdated(OffsetDateTime.now(Clock.systemUTC()))
                 .build();
-        return atomFeed.toString();
     }
 
     private String marshal(AtomFeed atomFeed) throws JaxbMarshallerException {
@@ -80,17 +91,17 @@ public class AtomFeedProducer {
         return result;
     }
 
-    private AtomFeed createAtomFeed(User user, AtomFeedsTimeIntervalEnum timeInterval) {
+    private AtomFeed createAtomFeed(User user, String requestURL, AtomFeedsTimeIntervalEnum timeInterval) {
         List<File> files = new ArrayList<>();
         List<Channel> channels = channelService.getChannelList(user.getId());
         for (var channel : channels) {
             files.addAll(channelService.getFileListDownloadedAfter(channel, timeInterval.getDateFrom()));
         }
 
-        AtomFeed atomFeed = AtomFeed.builder()
-                .setTitle("Y2RSS: user feed")
-                .setId("https://y2rss.ru/user/" + user.getUuid())
-                .setLink(new AtomLinkWithNS(AtomLink.REL_SELF, AtomLink.TYPE_RSS, "https://y2rss.ru/user/" + user.getUuid()))
+        return AtomFeed.builder()
+                .setTitle("Все файлы пользователя")
+                .setId(requestURL)
+                .setLink(new AtomLink(AtomLink.REL_SELF, AtomLink.TYPE_RSS, requestURL))
                 .setUpdated(
                         files.stream()
                                 .map(file -> OffsetDateTime.of(file.getUpdatedAt(), ZoneOffset.UTC))
@@ -98,18 +109,15 @@ public class AtomFeedProducer {
                                 .orElse(OffsetDateTime.now(Clock.systemUTC())))
                 .setEntries(createAtomEntries(files))
                 .build();
-
-        return atomFeed;
     }
 
-    private AtomFeed createAtomFeed(Channel channel, AtomFeedsTimeIntervalEnum timeInterval) {
-        List<File> files = new ArrayList<>();
-        files.addAll(channelService.getFileListDownloadedAfter(channel, timeInterval.getDateFrom()));
+    private AtomFeed createAtomFeed(Channel channel, String requestURL, AtomFeedsTimeIntervalEnum timeInterval) {
+        List<File> files = new ArrayList<>(channelService.getFileListDownloadedAfter(channel, timeInterval.getDateFrom()));
 
-        AtomFeed atomFeed = AtomFeed.builder()
+        return AtomFeed.builder()
                 .setTitle(channel.getTitle())
-                .setId("https://y2rss.ru/channel/" + channel.getUuid())
-                .setLink(new AtomLinkWithNS(AtomLink.REL_SELF, AtomLink.TYPE_RSS, "https://y2rss.ru/channel/" + channel.getUuid()))
+                .setId(requestURL)
+                .setLink(new AtomLink(AtomLink.REL_SELF, AtomLink.TYPE_RSS, requestURL))
                 .setUpdated(
                         files.stream()
                                 .map(file -> OffsetDateTime.of(file.getUpdatedAt(), ZoneOffset.UTC))
@@ -117,22 +125,12 @@ public class AtomFeedProducer {
                                 .orElse(OffsetDateTime.now(Clock.systemUTC())))
                 .setEntries(createAtomEntries(files))
                 .build();
-
-        return atomFeed;
     }
 
     private List<AtomEntry> createAtomEntries(List<File> files) {
         return files.stream()
                 .map(this::createAtomEntry)
                 .collect(Collectors.toList());
-    }
-
-    private AtomFeed addFilesIntoAtomFeed(List<File> files, AtomFeed atomFeed) {
-        atomFeed.addAtomEntries(
-                files.stream()
-                        .map(this::createAtomEntry)
-                        .collect(Collectors.toList()));
-        return atomFeed;
     }
 
     private AtomEntry createAtomEntry(File file) {

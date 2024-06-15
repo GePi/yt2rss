@@ -10,7 +10,6 @@ import java.time.OffsetDateTime;
 @Data
 @XmlAccessorType(XmlAccessType.FIELD)
 public class AtomEntry {
-    private static final String CONTENT_PLACEHOLDER = "Content";
     private String id;
     private String title;
     private AtomLink link;
@@ -27,6 +26,6 @@ public class AtomEntry {
         this.link = link;
         this.published = published;
         this.updated = updated;
-        this.content  = CONTENT_PLACEHOLDER;
+        this.content  = title;
     }
 }

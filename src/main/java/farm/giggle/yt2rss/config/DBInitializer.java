@@ -2,7 +2,7 @@ package farm.giggle.yt2rss.config;
 
 
 import farm.giggle.yt2rss.model.repo.UserRepo;
-import farm.giggle.yt2rss.serv.ChannelService;
+import farm.giggle.yt2rss.services.ChannelService;
 import jakarta.annotation.PostConstruct;
 import org.springframework.stereotype.Component;
 import org.springframework.transaction.annotation.Transactional;

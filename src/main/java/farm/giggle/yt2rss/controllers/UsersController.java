@@ -3,10 +3,11 @@ package farm.giggle.yt2rss.controllers;
 import farm.giggle.yt2rss.config.ApplicationConfig;
 import farm.giggle.yt2rss.config.HasRightToUser;
 import farm.giggle.yt2rss.config.HasRightToUsers;
-import farm.giggle.yt2rss.config.security.MixUserManagement;
+import farm.giggle.yt2rss.config.security.userservice.MixUserManagement;
 import farm.giggle.yt2rss.exceptions.UserNotFoundException;
 import farm.giggle.yt2rss.model.User;
-import farm.giggle.yt2rss.serv.UserService;
+import farm.giggle.yt2rss.services.InviteService;
+import farm.giggle.yt2rss.services.UserService;
 import org.springframework.beans.factory.annotation.Value;
 import org.springframework.data.domain.Page;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
@@ -22,16 +23,18 @@ import java.util.Objects;
 
 @Controller
 @RequestMapping("/users")
-public class UserController {
+public class UsersController {
     final UserService userService;
     final ApplicationConfig applicationConfig;
+    private final InviteService inviteService;
 
     @Value("${ADDING_ADMINISTRATOR_RIGHTS_KEY}")
     String systemVariableAdminKey;
 
-    public UserController(UserService userService, ApplicationConfig applicationConfig) {
+    public UsersController(UserService userService, ApplicationConfig applicationConfig, InviteService inviteService) {
         this.userService = userService;
         this.applicationConfig = applicationConfig;
+        this.inviteService = inviteService;
     }
 
     @GetMapping("/imadmin")
@@ -66,5 +69,25 @@ public class UserController {
         return "users";
     }
 
+    @GetMapping(path = "add_invite")
+    @HasRightToUsers
+    public String addInvite() {
+        return "invites/addinviteform";
+    }
 
+    @PostMapping(path = "add_invite")
+    @HasRightToUsers
+    public String addInvitePostHandler(@RequestParam("invite") String inviteCode,
+                                       Model model) {
+        String message;
+        if (inviteCode.isBlank()) {
+            message = "Пустой код приглашения добавить нельзя!";
+        } else {
+            inviteService.addInvite(inviteCode);
+            message = "Приглашение добавлено, вы можете скопировать ссылку с приглашением отправив её пользователю! "+
+            "https://y2rss.ru?invite=" + inviteCode;
+        }
+        model.addAttribute("inviteMessage",message);
+        return "invites/invitemessage";
+    }
 }

@@ -24,7 +24,7 @@ public class AtomFeed {
     @XmlJavaTypeAdapter(OffsetDateTimeAdapter.class)
     private OffsetDateTime updated;
 
-    private AtomLinkWithNS link;
+    private AtomLink link;
 
     @XmlElement(name = "entry")
     private List<AtomEntry> atomEntries = new ArrayList<>();
@@ -75,7 +75,7 @@ public class AtomFeed {
             return this;
         }
 
-        public Builder setLink(AtomLinkWithNS link) {
+        public Builder setLink(AtomLink link) {
             feed.link = link;
             return this;
         }

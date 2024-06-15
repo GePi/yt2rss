@@ -9,16 +9,19 @@
         <div th:replace="~{::custom-links-content}">
         </div>
         <div class="nav-links" sec:authorize="hasRole('ROLE_USER_MANAGEMENT')">
-            <span>|</span>
             <a href="/users">Управление пользователями</a>
+            <span>|</span>
+            <a href="/users/add_invite">Добавить приглашение</a>
         </div>
     </div>
 
     <div class="user-info" sec:authorize="isAnonymous()">
         <span>Войти через:&nbsp;</span>
         <a href="/oauth2/authorization/github">GitHub</a>
+        <!--
         <span>|</span>
         <a href="/oauth2/authorization/google">Google</a>
+        -->
         <span>|</span>
         <a href="/oauth2/authorization/yandex">Yandex</a>
     </div>

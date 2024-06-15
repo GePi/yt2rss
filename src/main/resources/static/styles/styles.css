@@ -40,20 +40,44 @@ a:hover {
     text-decoration: underline;
 }
 
-button, input[type="submit"] {
-    width: 100%;
-    background-color: white;
-    border: none;
-}
-
-button:hover, input[type="submit"]:hover {
-    width: 100%;
-    background-color: #0066cc;
-    border: none;
+label {
+    display: block;
+    margin-bottom: 5px;
+    font-weight: bold;
 }
 
 form {
     display: inline;
+}
+
+.invite-form {
+    padding-top: 2em;
+}
+
+.input-invite {
+    display: flex;
+    align-items: center;
+}
+
+.input-invite input {
+    width: 40ch;
+    margin-right: 10px;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
+}
+
+.input-invite button {
+    width: 25ch;
+    font-size: 16px;
+    padding: 4px;
+    margin-bottom: 10px;
+}
+
+.input-invite button:hover {
+    background-color: #0066cc;
 }
 
 .alert {
@@ -102,7 +126,7 @@ form {
     margin-left: 2em;
 }
 
-.navbar img{
+.navbar img {
     cursor: pointer;
 }
 
@@ -161,6 +185,7 @@ form {
     font-weight: normal;
     color: #444444;
 }
+
 .main-part .paragraph {
     padding-top: 1em;
 }
@@ -169,11 +194,10 @@ form {
     width: 80%;
     max-width: 600px;
     min-width: 300px;
-    margin: 0 auto; /* Центрируем форму */
+    margin: 0 auto;
     padding: 20px;
     border: 1px solid #ccc;
     border-radius: 8px;
-    background-color: #f9f9f9;
     box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
 }
 
@@ -186,31 +210,16 @@ form {
     color: #666;
 }
 
-label {
-    display: block;
-    margin-bottom: 5px;
-    font-weight: bold;
-}
-
-input[type="text"] {
-    width: 100%;
-    padding: 8px;
-    margin-bottom: 10px;
-    border: 1px solid #ccc;
-    border-radius: 4px;
-    box-sizing: border-box;
-}
-
 .form-buttons {
     display: flex;
-    justify-content: center; /* Центрируем кнопки */
-    gap: 10px; /* Отступ между кнопками */
+    justify-content: center;
+    gap: 10px;
 }
 
 .btn {
     display: flex;
     align-items: center;
-    padding: 10px 20px;
+    padding: 4px 20px;
     background-color: #007bff;
     color: white;
     border: none;
@@ -246,9 +255,19 @@ input[type="text"] {
 .btn-action img {
     padding-right: 0.5em;
 }
+
 .btn-action:hover {
     background-color: #0056b3;
     width: 120px;
+}
+
+.input-channel {
+    width: 100%;
+    padding: 8px;
+    margin-bottom: 10px;
+    border: 1px solid #ccc;
+    border-radius: 4px;
+    box-sizing: border-box;
 }
 
 

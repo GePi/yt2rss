@@ -2,6 +2,7 @@ package farm.giggle.yt2rss.config;
 
 import jakarta.servlet.http.HttpServletRequest;
 import jakarta.servlet.http.HttpServletResponse;
+import org.jetbrains.annotations.NotNull;
 import org.slf4j.LoggerFactory;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
@@ -19,8 +20,8 @@ public class ExceptionConfig {
             }
 
             @Override
-            public ModelAndView resolveException(HttpServletRequest request, HttpServletResponse response, Object handler, Exception ex) {
-                LoggerFactory.getLogger(ex.getClass()).debug("Exception occurred {}", ex);
+            public ModelAndView resolveException(@NotNull HttpServletRequest request, @NotNull HttpServletResponse response, Object handler, @NotNull Exception ex) {
+                LoggerFactory.getLogger(ex.getClass()).error("Exception occurred", ex);
                 return null;
             }
         };

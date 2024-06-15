@@ -10,9 +10,9 @@ spring:
     show-sql: true
     defer-datasource-initialization: false
   liquibase:
-    enabled: false
+    enabled: true
 logging:
   level:
-    org.springframework.security: DEBUG
-    org.springframework.security.web: DEBUG
-    org.springframework.security.oauth2: DEBUG
+    farm.giggle: DEBUG
+    org.springframework: ERROR
+    org.springframework.security: ERROR

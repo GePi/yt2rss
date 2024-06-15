@@ -1,6 +1,8 @@
 package farm.giggle.yt2rss.config.security;
 
-import farm.giggle.yt2rss.serv.UserService;
+import farm.giggle.yt2rss.config.security.userservice.ExtendedOAuth2UserService;
+import farm.giggle.yt2rss.config.security.userservice.ExtendedOidcUserService;
+import farm.giggle.yt2rss.services.UserService;
 import org.springframework.context.annotation.Bean;
 import org.springframework.context.annotation.Configuration;
 import org.springframework.security.config.annotation.web.builders.HttpSecurity;
@@ -37,6 +39,7 @@ public class SecurityConfig {
                         .requestMatchers("/rss/**").permitAll()
                         .requestMatchers("/styles/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
+                        .requestMatchers("/setinvitationcode").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(
                         httpSecurityOAuth2LoginConfigurer -> {

@@ -59,7 +59,7 @@
                     </form>
                 </td>
                 <td>
-                    <a th:href="@{/rss/channel/{channel_uuid}/LAST_DAY(channel_uuid=${channel.uuid})}">За день</a>
+                    <a th:href="@{/rss/channel/LAST_DAY/{channel_uuid}(channel_uuid=${channel.uuid})}">За день</a>
                     <a th:href="@{/rss/channel/{channel_uuid}(channel_uuid=${channel.uuid})}">Полный</a>
                 </td>
             </tr>

@@ -25,17 +25,19 @@
             <div class="header-title">Добро пожаловать, на этом сайте вы можете:</div>
         </div>
         <div class="paragraph">
-            Сначала авторизоваться используя Github или Google.
+            Авторизоваться здесь используя учетную запись Github или Yandex.
         </div>
         <div class="paragraph">
-            Затем добавить все каналы youtube которые вы ходите СЛУШАТЬ в свой <a href="/channels">список каналов</a>.
+            Добавить ссылки на все каналы youtube которые вы ходите СЛУШАТЬ в свой <a href="/channels">список
+            каналов</a>.
             Для этого просто добавляйте URL со ссылкой на канал на
             <a th:href='@{/channels/add-channel(ch=0)}+${sessionParamsString}'>соответствующей странице</a>.
         </div>
         <div class="paragraph">
-            Для каждого из добавленных вами каналов будет создан RSS поток со ссылками на эпизоды канала в аудио-формате.
+            Для каждого из добавленных вами каналов будет создан RSS поток со ссылками на эпизоды канала в
+            аудио-формате.
             Этот список будет обновляться в соответствии с обновлениями основного канала.
-            Сайт сам будет скачивать видео эпизоды и преобразовывать файлы в аудио формат.
+            Сервис сам будет скачивать видео эпизоды и преобразовывать файлы в аудио формат.
             Вам лишь необходимо подписаться на соответствующий RSS для канала и слушать в своё удовольствие.
         </div>
         <div class="paragraph">
@@ -47,6 +49,19 @@
             <a sec:authorize="isAuthenticated()" th:href="@{/rss/user/{user_uuid}(user_uuid=${user_uuid})}">RSS feed
                 "все файлы"</a>
             и получайте все свои файлы в одном потоке.
+        </div>
+        <div class="invite-form" sec:authorize="isAnonymous()">
+            <form method="post" th:action="@{/setinvitationcode}">
+                <label for="invite-code-input">Если вы не были зарегистрированы, то для использования сервиса вам
+                    необходим код приглашения:</label>
+                <div class="input-invite">
+                    <input type="text" id="invite-code-input" name="invite" placeholder="Укажите код приглашения"
+                           th:value="${invite_code}">
+                    <button type="submit" class="btn">
+                        <img src="/images/icon-add-without-bg.png" alt="invite" width="25px"> Использовать код
+                    </button>
+                </div>
+            </form>
         </div>
     </div>
 </main>
