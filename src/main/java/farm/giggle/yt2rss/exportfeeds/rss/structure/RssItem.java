@@ -35,13 +35,4 @@ public class RssItem {
         this.link = file.getDownloadedFileUrl();
         this.enclosure = new RssEnclosure(file.getDownloadedSize(), file.getDownloadedFileUrl());
     }
-
-    public RssItem(String title, String description, String link, String guid, OffsetDateTime pubDate, RssEnclosure enclosure) {
-        this.title = title;
-        this.description = description;
-        this.link = link;
-        this.guid = guid;
-        this.pubDate = pubDate;
-        this.enclosure = enclosure;
-    }
 }

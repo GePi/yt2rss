@@ -1,7 +1,6 @@
 package farm.giggle.yt2rss.controllers;
 
 import farm.giggle.yt2rss.config.security.userservice.MixUserManagement;
-import farm.giggle.yt2rss.model.repo.InviteRepo;
 import jakarta.servlet.http.HttpSession;
 import org.springframework.security.core.annotation.AuthenticationPrincipal;
 import org.springframework.stereotype.Controller;
@@ -14,11 +13,6 @@ import org.springframework.web.bind.annotation.RequestParam;
 @Controller
 @RequestMapping("/")
 public class WelcomeController {
-    private final InviteRepo inviteRepo;
-
-    public WelcomeController(InviteRepo inviteRepo) {
-        this.inviteRepo = inviteRepo;
-    }
 
     @GetMapping
     public String welcomePage(@AuthenticationPrincipal MixUserManagement principal,

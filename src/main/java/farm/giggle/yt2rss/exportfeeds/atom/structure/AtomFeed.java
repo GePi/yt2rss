@@ -37,10 +37,6 @@ public class AtomFeed {
         atomEntries.add(atomEntry);
     }
 
-    public void addAtomEntries(Collection<AtomEntry> atomEntries) {
-        this.atomEntries.addAll(atomEntries);
-    }
-
     @Override
     public String toString() {
         return "AtomFeed{" +

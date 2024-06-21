@@ -12,9 +12,7 @@ import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.services.ChannelService;
 import farm.giggle.yt2rss.services.UserService;
-import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.stereotype.Service;
-import org.springframework.web.bind.annotation.ResponseStatus;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -48,8 +46,6 @@ public class RssFeedProducer extends FeedProducerAbstract {
 
     @Override
     public String getErrorFeed(Exception e) throws JaxbMarshallerException {
-        ResponseStatus annotation = AnnotationUtils.findAnnotation(e.getClass(), ResponseStatus.class);
-
         RssFeed rssFeed = new RssFeed();
         RssChannel rssChannel = new RssChannel("Произошла ошибка");
         rssFeed.setChannel(rssChannel);

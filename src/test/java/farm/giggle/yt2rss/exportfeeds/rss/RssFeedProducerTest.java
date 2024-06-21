@@ -35,7 +35,6 @@ class RssFeedProducerTest {
     RssFeedProducer producer;
 
     private AutoCloseable closeable;
-    private File file1;
 
     @BeforeEach
     void serUp() {
@@ -54,9 +53,8 @@ class RssFeedProducerTest {
         LocalDateTime downloadedAfter = timeInterval.getDateFrom();
 
         Channel channel = new Channel("https://ffaway.ru?channelId=111111", "Test channel", new User());
-        LocalDateTime dateTime = LocalDateTime.now();
-        File file0 = new File("VID0", "Заголовок файла 1", "https://original.ffaway.ru?fileId=VID0", LocalDateTime.of(2024, 05, 10, 9, 0), LocalDateTime.of(2024, 5, 10, 9, 0), channel);
-        File file1 = new File("VID1", "Заголовок файла 2", "https://original.ffaway.ru?fileId=VID2", LocalDateTime.of(2024, 05, 12, 10, 0), LocalDateTime.of(2024, 5, 12, 10, 0), channel);
+        File file0 = new File("VID0", "Заголовок файла 1", "https://original.ffaway.ru?fileId=VID0", LocalDateTime.of(2024, 5, 10, 9, 0), LocalDateTime.of(2024, 5, 10, 9, 0), channel);
+        File file1 = new File("VID1", "Заголовок файла 2", "https://original.ffaway.ru?fileId=VID2", LocalDateTime.of(2024, 5, 12, 10, 0), LocalDateTime.of(2024, 5, 12, 10, 0), channel);
         file0.setDowloadedAt(LocalDateTime.now());
         file0.setDownloadedFileUrl("https://storage.ffaway.ru/file0");
         file0.setDownloadedSize(100500);
@@ -85,8 +83,8 @@ class RssFeedProducerTest {
         LocalDateTime downloadedAfter = timeInterval.getDateFrom();
 
         Channel channel = new Channel("https://ffaway.ru?channelId=111111", "Test channel", new User());
-        File file0 = new File("VID0", "Заголовок файла 1", "https://original.ffaway.ru?fileId=VID0", LocalDateTime.of(2024, 05, 10, 9, 0), LocalDateTime.of(2024, 5, 10, 9, 0), channel);
-        File file1 = new File("VID1", "Заголовок файла 2", "https://original.ffaway.ru?fileId=VID2", LocalDateTime.of(2024, 05, 12, 10, 0), LocalDateTime.of(2024, 5, 12, 10, 0), channel);
+        File file0 = new File("VID0", "Заголовок файла 1", "https://original.ffaway.ru?fileId=VID0", LocalDateTime.of(2024, 5, 10, 9, 0), LocalDateTime.of(2024, 5, 10, 9, 0), channel);
+        File file1 = new File("VID1", "Заголовок файла 2", "https://original.ffaway.ru?fileId=VID2", LocalDateTime.of(2024, 5, 12, 10, 0), LocalDateTime.of(2024, 5, 12, 10, 0), channel);
         file0.setDowloadedAt(LocalDateTime.now(Clock.systemUTC()));
         file0.setDownloadedFileUrl("https://storage.ffaway.ru/file0");
         file0.setDownloadedSize(100500);
