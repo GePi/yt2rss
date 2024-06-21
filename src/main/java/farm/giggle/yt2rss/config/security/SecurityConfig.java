@@ -34,12 +34,12 @@ public class SecurityConfig {
                 .logout(logout -> logout
                         .logoutSuccessUrl("/"))
                 .authorizeHttpRequests(authorize -> authorize
-                        .requestMatchers("/", "/oauth2-login", "/login/oauth2/code/yandex/**").permitAll()
+                        .requestMatchers("/", "/oauth2-login" , "/oauth2-login/**", "/login/oauth2/code/yandex/**").permitAll()
                         .requestMatchers("/error").permitAll()
-                        .requestMatchers("/rss/**").permitAll()
+                        .requestMatchers("/rss/**", "/atom/**").permitAll()
                         .requestMatchers("/styles/**").permitAll()
                         .requestMatchers("/images/**").permitAll()
-                        .requestMatchers("/setinvitationcode").permitAll()
+                        .requestMatchers("/setinvitationcode","/setinvitationcode/**").permitAll()
                         .anyRequest().authenticated())
                 .oauth2Login(
                         httpSecurityOAuth2LoginConfigurer -> {

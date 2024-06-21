@@ -1,10 +1,10 @@
-package farm.giggle.yt2rss.atom.structure;
+package farm.giggle.yt2rss.exportfeeds;
 
 import java.time.LocalDateTime;
 import java.time.ZoneOffset;
 import java.time.temporal.ChronoUnit;
 
-public enum AtomFeedsTimeIntervalEnum {
+public enum FeedsTimeIntervalEnum {
     LAST_DAY(1440L, ChronoUnit.MINUTES),
     LAST_THREE_DAYS(3L, ChronoUnit.DAYS),
     LAST_HOUR(60L, ChronoUnit.MINUTES),
@@ -13,12 +13,12 @@ public enum AtomFeedsTimeIntervalEnum {
     private final Long minusChronUnitsVal;
     private final ChronoUnit chronoUnit;
 
-    AtomFeedsTimeIntervalEnum(Long minusChronUnitsVal, ChronoUnit chronoUnit) {
+    FeedsTimeIntervalEnum(Long minusChronUnitsVal, ChronoUnit chronoUnit) {
         this.minusChronUnitsVal = minusChronUnitsVal;
         this.chronoUnit = chronoUnit;
     }
 
-    AtomFeedsTimeIntervalEnum() {
+    FeedsTimeIntervalEnum() {
         this.minusChronUnitsVal = 0L;
         this.chronoUnit = ChronoUnit.FOREVER;
     }

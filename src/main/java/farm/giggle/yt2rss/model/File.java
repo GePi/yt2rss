@@ -39,6 +39,8 @@ public class File {
     private String downloadedFileUrl;
     @Column(name = "DOWNLOADED_CONTENT_TYPE")
     private String downloadedContentType;
+    @Column(name = "DOWNLOADED_SIZE")
+    private int downloadedSize;
 
     @Version
     private int version;

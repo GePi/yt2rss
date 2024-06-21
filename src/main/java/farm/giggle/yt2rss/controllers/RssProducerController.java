@@ -18,11 +18,11 @@ import java.util.UUID;
 
 @Slf4j
 @Controller
-@RequestMapping("/atom")
-public class AtomProducerController {
+@RequestMapping("/rss")
+public class RssProducerController {
     FeedProducer feedProducer;
 
-    public AtomProducerController(@Qualifier("AtomFeedProducer") FeedProducer feedProducer) {
+    public RssProducerController(@Qualifier("RssFeedProducer") FeedProducer feedProducer) {
         this.feedProducer = feedProducer;
     }
 

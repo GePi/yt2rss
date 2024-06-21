@@ -41,8 +41,9 @@ public class WelcomeController {
     @PostMapping(path = "/setinvitationcode")
     public String fillInvitePostHandler(@RequestParam("invite") String inviteCode,
                                         @AuthenticationPrincipal MixUserManagement principal,
-                                        HttpSession httpSession) {
+                                        HttpSession httpSession,
+                                        Model model) {
         httpSession.setAttribute("invite_code", inviteCode);
-        return "redirect:/";
+        return welcomePage(principal, "", model, httpSession);
     }
 }

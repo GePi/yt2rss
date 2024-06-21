@@ -1,26 +1,23 @@
-package farm.giggle.yt2rss.atom.services;
+package farm.giggle.yt2rss.exportfeeds.atom;
 
-import farm.giggle.yt2rss.atom.structure.AtomEntry;
-import farm.giggle.yt2rss.atom.structure.AtomFeed;
-import farm.giggle.yt2rss.atom.structure.AtomFeedsTimeIntervalEnum;
-import farm.giggle.yt2rss.atom.structure.AtomLink;
 import farm.giggle.yt2rss.exceptions.JaxbMarshallerException;
 import farm.giggle.yt2rss.exceptions.ResourceNotFoundException;
+import farm.giggle.yt2rss.exportfeeds.FeedProducerAbstract;
+import farm.giggle.yt2rss.exportfeeds.atom.structure.AtomEntry;
+import farm.giggle.yt2rss.exportfeeds.atom.structure.AtomFeed;
+import farm.giggle.yt2rss.exportfeeds.FeedsTimeIntervalEnum;
+import farm.giggle.yt2rss.exportfeeds.atom.structure.AtomLink;
 import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.services.ChannelService;
 import farm.giggle.yt2rss.services.UserService;
-import jakarta.xml.bind.JAXBContext;
-import jakarta.xml.bind.JAXBException;
-import jakarta.xml.bind.Marshaller;
 import org.springframework.core.annotation.AnnotationUtils;
 import org.springframework.http.HttpStatus;
 import org.springframework.stereotype.Service;
 import org.springframework.transaction.annotation.Transactional;
 import org.springframework.web.bind.annotation.ResponseStatus;
 
-import java.io.StringWriter;
 import java.time.Clock;
 import java.time.OffsetDateTime;
 import java.time.ZoneOffset;
@@ -29,37 +26,37 @@ import java.util.List;
 import java.util.UUID;
 import java.util.stream.Collectors;
 
-@Service
-public class AtomFeedProducer {
-    private final ChannelService channelService;
-    private final UserService userService;
+@Service("AtomFeedProducer")
+public class AtomFeedProducer extends FeedProducerAbstract {
 
     public AtomFeedProducer(ChannelService channelService, UserService userService) {
-        this.channelService = channelService;
-        this.userService = userService;
+        super(channelService, userService);
     }
 
+    @Override
     @Transactional
-    public String getUserAtomXML(UUID userUUID, AtomFeedsTimeIntervalEnum timeInterval, String requestURL) throws JaxbMarshallerException, ResourceNotFoundException {
+    public String getUserFeed(UUID userUUID, FeedsTimeIntervalEnum timeInterval, String requestURL) throws JaxbMarshallerException, ResourceNotFoundException {
         User user = userService.getUserByUUID(userUUID);
         if (user == null) {
             throw new ResourceNotFoundException("Пользователь не найден");
         }
-        AtomFeed atomFeed = createAtomFeed(user, requestURL, (timeInterval == null) ? AtomFeedsTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
+        AtomFeed atomFeed = createAtomFeed(user, requestURL, (timeInterval == null) ? FeedsTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
         return marshal(atomFeed);
     }
 
+    @Override
     @Transactional
-    public String getChannelAtomXML(UUID channelUUID, AtomFeedsTimeIntervalEnum timeInterval, String requestURL) throws JaxbMarshallerException, ResourceNotFoundException {
+    public String getChannelFeed(UUID channelUUID, FeedsTimeIntervalEnum timeInterval, String requestURL) throws JaxbMarshallerException, ResourceNotFoundException {
         Channel channel = channelService.getChannel(channelUUID);
         if (channel == null) {
             throw new ResourceNotFoundException("Канал не найден");
         }
-        AtomFeed atomFeed = createAtomFeed(channel, requestURL, (timeInterval == null) ? AtomFeedsTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
+        AtomFeed atomFeed = createAtomFeed(channel, requestURL, (timeInterval == null) ? FeedsTimeIntervalEnum.FAR_FAR_AWAY : timeInterval);
         return marshal(atomFeed);
     }
 
-    public String getErrorAtomXML(Exception e) throws JaxbMarshallerException {
+    @Override
+    public String getErrorFeed(Exception e) throws JaxbMarshallerException {
         return marshal(createAtomFeed(e));
     }
 
@@ -76,22 +73,7 @@ public class AtomFeedProducer {
                 .build();
     }
 
-    private String marshal(AtomFeed atomFeed) throws JaxbMarshallerException {
-        String result;
-        try {
-            JAXBContext context = JAXBContext.newInstance(AtomFeed.class);
-            Marshaller mar = context.createMarshaller();
-            mar.setProperty(Marshaller.JAXB_FORMATTED_OUTPUT, Boolean.TRUE);
-            StringWriter sw = new StringWriter();
-            mar.marshal(atomFeed, sw);
-            result = sw.toString();
-        } catch (JAXBException e) {
-            throw new JaxbMarshallerException(e);
-        }
-        return result;
-    }
-
-    private AtomFeed createAtomFeed(User user, String requestURL, AtomFeedsTimeIntervalEnum timeInterval) {
+    private AtomFeed createAtomFeed(User user, String requestURL, FeedsTimeIntervalEnum timeInterval) {
         List<File> files = new ArrayList<>();
         List<Channel> channels = channelService.getChannelList(user.getId());
         for (var channel : channels) {
@@ -111,7 +93,7 @@ public class AtomFeedProducer {
                 .build();
     }
 
-    private AtomFeed createAtomFeed(Channel channel, String requestURL, AtomFeedsTimeIntervalEnum timeInterval) {
+    private AtomFeed createAtomFeed(Channel channel, String requestURL, FeedsTimeIntervalEnum timeInterval) {
         List<File> files = new ArrayList<>(channelService.getFileListDownloadedAfter(channel, timeInterval.getDateFrom()));
 
         return AtomFeed.builder()

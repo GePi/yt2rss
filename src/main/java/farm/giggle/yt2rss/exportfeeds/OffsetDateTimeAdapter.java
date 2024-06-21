@@ -1,4 +1,4 @@
-package farm.giggle.yt2rss.atom.structure;
+package farm.giggle.yt2rss.exportfeeds;
 
 import jakarta.xml.bind.annotation.adapters.XmlAdapter;
 

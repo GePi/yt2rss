@@ -1,6 +1,7 @@
-package farm.giggle.yt2rss.atom.structure;
+package farm.giggle.yt2rss.exportfeeds.atom.structure;
 
 import farm.giggle.yt2rss.exceptions.AtomValidationException;
+import farm.giggle.yt2rss.exportfeeds.OffsetDateTimeAdapter;
 import jakarta.xml.bind.annotation.XmlAccessType;
 import jakarta.xml.bind.annotation.XmlAccessorType;
 import jakarta.xml.bind.annotation.XmlElement;
