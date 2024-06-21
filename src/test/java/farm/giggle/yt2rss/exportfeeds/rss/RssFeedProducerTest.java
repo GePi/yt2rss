@@ -9,6 +9,7 @@ import farm.giggle.yt2rss.model.Channel;
 import farm.giggle.yt2rss.model.File;
 import farm.giggle.yt2rss.model.User;
 import farm.giggle.yt2rss.services.ChannelService;
+import org.jetbrains.annotations.NotNull;
 import org.junit.jupiter.api.AfterEach;
 import org.junit.jupiter.api.BeforeEach;
 import org.junit.jupiter.api.Test;
@@ -48,21 +49,11 @@ class RssFeedProducerTest {
 
     @Test
     void createFeedChannel_addedEnclosure() {
-
         FeedsTimeIntervalEnum timeInterval = FeedsTimeIntervalEnum.FAR_FAR_AWAY;
         LocalDateTime downloadedAfter = timeInterval.getDateFrom();
 
         Channel channel = new Channel("https://ffaway.ru?channelId=111111", "Test channel", new User());
-        File file0 = new File("VID0", "Заголовок файла 1", "https://original.ffaway.ru?fileId=VID0", LocalDateTime.of(2024, 5, 10, 9, 0), LocalDateTime.of(2024, 5, 10, 9, 0), channel);
-        File file1 = new File("VID1", "Заголовок файла 2", "https://original.ffaway.ru?fileId=VID2", LocalDateTime.of(2024, 5, 12, 10, 0), LocalDateTime.of(2024, 5, 12, 10, 0), channel);
-        file0.setDowloadedAt(LocalDateTime.now());
-        file0.setDownloadedFileUrl("https://storage.ffaway.ru/file0");
-        file0.setDownloadedSize(100500);
-        file1.setDowloadedAt(LocalDateTime.now());
-        file1.setDownloadedFileUrl("https://storage.ffaway.ru/file1");
-        file1.setDownloadedSize(100400);
-
-        List<File> fileList = new ArrayList<>(Arrays.asList(file0, file1));
+        List<File> fileList = getFiles(channel, LocalDateTime.now(Clock.systemUTC()));
 
         when(channelService.getFileListDownloadedAfter(channel, downloadedAfter)).thenReturn(fileList);
 
@@ -76,30 +67,32 @@ class RssFeedProducerTest {
     }
 
     @Test
-    void createFeedChannel_marshalling() throws JaxbMarshallerException, ResourceNotFoundException {
+    void createFeedChannel_marshalled() throws JaxbMarshallerException, ResourceNotFoundException {
         UUID channelUUID = UUID.randomUUID();
 
         FeedsTimeIntervalEnum timeInterval = FeedsTimeIntervalEnum.FAR_FAR_AWAY;
         LocalDateTime downloadedAfter = timeInterval.getDateFrom();
 
         Channel channel = new Channel("https://ffaway.ru?channelId=111111", "Test channel", new User());
-        File file0 = new File("VID0", "Заголовок файла 1", "https://original.ffaway.ru?fileId=VID0", LocalDateTime.of(2024, 5, 10, 9, 0), LocalDateTime.of(2024, 5, 10, 9, 0), channel);
-        File file1 = new File("VID1", "Заголовок файла 2", "https://original.ffaway.ru?fileId=VID2", LocalDateTime.of(2024, 5, 12, 10, 0), LocalDateTime.of(2024, 5, 12, 10, 0), channel);
-        file0.setDowloadedAt(LocalDateTime.now(Clock.systemUTC()));
-        file0.setDownloadedFileUrl("https://storage.ffaway.ru/file0");
-        file0.setDownloadedSize(100500);
-        file1.setDowloadedAt(LocalDateTime.now(Clock.systemUTC()));
-        file1.setDownloadedFileUrl("https://storage.ffaway.ru/file1");
-        file1.setDownloadedSize(100400);
-
-        List<File> fileList = new ArrayList<>(Arrays.asList(file0, file1));
+        List<File> fileList = getFiles(channel, LocalDateTime.now(Clock.systemUTC()));
 
         when(channelService.getFileListDownloadedAfter(channel, downloadedAfter)).thenReturn(fileList);
         when(channelService.getChannel(channelUUID)).thenReturn(channel);
         String channelFeedXMLString = producer.getChannelFeed(channelUUID, FeedsTimeIntervalEnum.FAR_FAR_AWAY, "https://y2rss.ru/rss?channelId=" + channelUUID);
         assertNotNull(channelFeedXMLString);
-        System.out.println(channelFeedXMLString);
     }
 
+    @NotNull
+    private static List<File> getFiles(Channel channel, LocalDateTime downloadedAt) {
+        File file0 = new File("VID0", "Заголовок файла 1", "https://original.ffaway.ru?fileId=VID0", LocalDateTime.of(2024, 5, 10, 9, 0), LocalDateTime.of(2024, 5, 10, 9, 0), channel);
+        File file1 = new File("VID1", "Заголовок файла 2", "https://original.ffaway.ru?fileId=VID2", LocalDateTime.of(2024, 5, 12, 10, 0), LocalDateTime.of(2024, 5, 12, 10, 0), channel);
+        file0.setDowloadedAt(downloadedAt);
+        file0.setDownloadedFileUrl("https://storage.ffaway.ru/file0");
+        file0.setDownloadedSize(100500);
+        file1.setDowloadedAt(downloadedAt);
+        file1.setDownloadedFileUrl("https://storage.ffaway.ru/file1");
+        file1.setDownloadedSize(100400);
 
+        return new ArrayList<>(Arrays.asList(file0, file1));
+    }
 }
