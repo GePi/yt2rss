@@ -32,6 +32,11 @@ public class WelcomeController {
         return "welcome";
     }
 
+    @GetMapping(path = "/oauth2-login")
+    public String authPage() {
+        return "oauth2-login";
+    }
+
     @PostMapping(path = "/setinvitationcode")
     public String fillInvitePostHandler(@RequestParam("invite") String inviteCode,
                                         @AuthenticationPrincipal MixUserManagement principal,

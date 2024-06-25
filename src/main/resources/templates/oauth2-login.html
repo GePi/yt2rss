@@ -2,7 +2,7 @@
 <html xmlns:th="http://www.thymeleaf.org" lang="ru">
 <head>
     <meta charset="UTF-8">
-    <title>Регистрация</title>
+    <title>Аутентификация пользователя</title>
     <link rel="stylesheet" href="/styles/styles.css">
 </head>
 <body>
@@ -24,8 +24,10 @@
             Чтобы показать вам ваши и только ваши каналы, файлы и RSS, необходимо
         </div>
         <div class="paragraph">
+            <!--
             <a th:href="@{/oauth2/authorization/google}">зайти через Google</a>
             <span> или </span>
+            -->
             <a th:href="@{/oauth2/authorization/github}">зайти через GitHub</a>
             <span> или </span>
             <a th:href="@{/oauth2/authorization/yandex}">зайти через Yandex</a>
